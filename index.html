@@ -46,21 +46,29 @@
         </div>
     </footer>
 
-    <script>
-        const chatWindow = document.getElementById('chat-window');
-        const userInput = document.getElementById('user-input');
-        const sendBtn = document.getElementById('send-btn');
+    import { GoogleGenerativeAI } from "@google/generative-ai";
 
-        // دالة لإضافة الرسائل للواجهة
-        function appendMessage(text, isUser = false) {
-            const msgDiv = document.createElement('div');
-            msgDiv.className = isUser 
-                ? "bg-blue-600 p-4 rounded-2xl rounded-tl-none max-w-[80%] self-end text-white shadow-lg" 
-                : "bg-slate-800 p-4 rounded-2xl rounded-tr-none max-w-[80%] self-start border border-slate-700";
-            msgDiv.innerText = text;
-            chatWindow.appendChild(msgDiv);
-            chatWindow.scrollTop = chatWindow.scrollHeight;
-        }
+// استبدل الكلمة أدناه بمفتاحك الذي حصلت عليه
+const API_KEY = "ضغ_مفتاحك_هنا"; 
+const genAI = new GoogleGenerativeAI(API_KEY);
+
+async function handleSend() {
+    const text = userInput.value.trim();
+    if (!text) return;
+
+    appendMessage(text, true);
+    userInput.value = '';
+
+    try {
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const result = await model.generateContent(text);
+        const response = await result.response;
+        appendMessage(response.text());
+    } catch (error) {
+        appendMessage("عذراً، حدث خطأ في الاتصال. تأكد من صحة الـ API Key.");
+        console.error(error);
+    }
+}
 
         // منطق الإرسال
         async function handleSend() {
@@ -79,7 +87,7 @@
 
         sendBtn.addEventListener('click', handleSend);
         userInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') handleSend();
+            if (e.key === 'AQ.Ab8RN6KNvpzkAl69ZWi0fU2CCg08vt-H_v7jcGVMxsJ5lZeyiA') handleSend();
         });
     </script>
 </body>
