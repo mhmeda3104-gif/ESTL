@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Luminary â€” Ø§Ù„Ù…ØªØ¬Ø±</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .page-hero { padding: 12rem 0 6rem; position: relative; overflow: hidden; }
+    .page-hero::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse 50% 70% at 70% 40%, rgba(201,168,76,0.07) 0%, transparent 70%);
+    }
+    .page-hero-inner { position: relative; }
+
+    /* SHOP LAYOUT */
+    .shop-layout { display: grid; grid-template-columns: 240px 1fr; gap: 4rem; align-items: start; }
+
+    /* SIDEBAR */
+    .shop-sidebar {}
+    .sidebar-section { margin-bottom: 2.5rem; }
+    .sidebar-title {
+      font-size: 0.7rem; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--gold);
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border-dim);
+    }
+    .sidebar-list { list-style: none; }
+    .sidebar-list li { margin-bottom: 0.5rem; }
+    .sidebar-list a {
+      color: var(--text-muted); text-decoration: none;
+      font-size: 0.875rem; transition: color 0.2s;
+      display: flex; justify-content: space-between;
+    }
+    .sidebar-list a:hover, .sidebar-list a.active { color: var(--gold); }
+    .sidebar-list .count { color: var(--text-dim); font-size: 0.75rem; }
+
+    .price-range { display: flex; flex-direction: column; gap: 0.75rem; }
+    .price-range input[type=range] { width: 100%; }
+    .price-vals { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted); }
+
+    /* PRODUCTS */
+    .shop-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 2rem; padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border-dim);
+    }
+    .shop-count { font-size: 0.875rem; color: var(--text-muted); }
+    .shop-sort {
+      background: var(--bg3); border: 1px solid var(--border-dim);
+      color: var(--text); padding: 0.5rem 1rem;
+      font-family: var(--font-body); font-size: 0.8rem;
+      cursor: pointer;
+    }
+
+    .products-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.5rem; }
+    .product-card { cursor: pointer; }
+    .product-img {
+      width: 100%; aspect-ratio: 1;
+      position: relative; overflow: hidden; margin-bottom: 1rem;
+      background: var(--bg3);
+    }
+    .product-ph {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-display);
+      font-size: 4rem; font-weight: 300;
+      transition: transform 0.4s;
+    }
+    .product-card:hover .product-ph { transform: scale(1.05); }
+    .product-badge {
+      position: absolute; top: 1rem; right: 1rem;
+      font-size: 0.6rem; letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 0.3rem 0.75rem;
+    }
+    .badge-new { background: var(--gold); color: var(--bg); }
+    .badge-sale { background: #c0392b; color: #fff; }
+    .product-wishlist {
+      position: absolute; top: 1rem; left: 1rem;
+      width: 2rem; height: 2rem;
+      border: 1px solid var(--border-dim);
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(10,10,10,0.7);
+      color: var(--text-muted); font-size: 0.8rem;
+      transition: all 0.2s; opacity: 0;
+      cursor: pointer;
+    }
+    .product-card:hover .product-wishlist { opacity: 1; }
+    .product-wishlist:hover { color: #e74c3c; border-color: #e74c3c; }
+    .product-quick {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      background: rgba(10,10,10,0.9);
+      border-top: 1px solid var(--border);
+      text-align: center;
+      padding: 0.75rem;
+      font-size: 0.7rem; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--gold);
+      transform: translateY(100%); transition: transform 0.3s;
+    }
+    .product-card:hover .product-quick { transform: translateY(0); }
+    .product-cat {
+      font-size: 0.65rem; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--text-dim);
+      margin-bottom: 0.25rem;
+    }
+    .product-name { font-size: 1rem; margin-bottom: 0.4rem; font-family: var(--font-display); }
+    .product-price-row { display: flex; justify-content: space-between; align-items: center; }
+    .product-price { color: var(--gold); font-weight: 400; }
+    .product-price del { color: var(--text-dim); font-size: 0.8rem; margin-left: 0.5rem; }
+    .add-cart-btn {
+      background: none; border: 1px solid var(--border-dim);
+      color: var(--text-muted); font-size: 0.65rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 0.35rem 0.75rem; cursor: pointer;
+      transition: all 0.2s;
+    }
+    .add-cart-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+    /* CART BADGE */
+    .cart-badge {
+      position: fixed; bottom: 2rem; left: 2rem;
+      background: var(--bg2); border: 1px solid var(--border);
+      padding: 1rem 1.5rem;
+      display: flex; align-items: center; gap: 1rem;
+      z-index: 50;
+      transform: translateY(100px); opacity: 0;
+      transition: all 0.4s;
+    }
+    .cart-badge.show { transform: translateY(0); opacity: 1; }
+    .cart-badge span { font-size: 0.8rem; }
+    .cart-badge .gold { font-family: var(--font-display); font-size: 1.1rem; }
+
+    .ph-a { background: linear-gradient(135deg, #1a1810 0%, #2e2518 100%); color: rgba(201,168,76,0.3); }
+    .ph-b { background: linear-gradient(135deg, #101a15 0%, #0d1e18 100%); color: rgba(100,180,140,0.3); }
+    .ph-c { background: linear-gradient(135deg, #1a1018 0%, #200d1a 100%); color: rgba(180,100,150,0.3); }
+    .ph-d { background: linear-gradient(135deg, #101518 0%, #0d1820 100%); color: rgba(100,150,200,0.3); }
+    .ph-e { background: linear-gradient(135deg, #181210 0%, #201610 100%); color: rgba(200,150,100,0.3); }
+    .ph-f { background: linear-gradient(135deg, #121818 0%, #0d1e1a 100%); color: rgba(80,180,180,0.3); }
+
+    @media(max-width:900px) {
+      .shop-layout { grid-template-columns: 1fr; }
+      .shop-sidebar { display: none; }
+      .products-grid { grid-template-columns: repeat(2,1fr); }
+    }
+    @media(max-width:600px) { .products-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">Luminary</a>
+  <button class="hamburger" id="burger"><span></span><span></span><span></span></button>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="index.html">Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠØ©</a></li>
+    <li><a href="about.html">Ù…Ù† Ù†Ø­Ù†</a></li>
+    <li><a href="services.html">Ø®Ø¯Ù…Ø§ØªÙ†Ø§</a></li>
+    <li><a href="portfolio.html">Ø£Ø¹Ù…Ø§Ù„Ù†Ø§</a></li>
+    <li><a href="shop.html" class="active">Ø§Ù„Ù…ØªØ¬Ø±</a></li>
+    <li><a href="contact.html">ØªÙˆØ§ØµÙ„</a></li>
+  </ul>
+  <a href="contact.html" class="nav-cta">Ø§Ø¨Ø¯Ø£ Ù…Ø¹Ù†Ø§</a>
+</nav>
+
+<section class="page-hero">
+  <div class="container page-hero-inner">
+    <div class="section-tag fade-up">Ø§Ù„Ù…ØªØ¬Ø±</div>
+    <h1 class="fade-up">Ù…Ù†ØªØ¬Ø§Øª<br><span class="italic gold">Ù…ÙØµÙ…Ù…Ø©</span><br>Ø¨Ø¹Ù†Ø§ÙŠØ©</h1>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="shop-layout">
+      <!-- SIDEBAR -->
+      <aside class="shop-sidebar fade-up">
+        <div class="sidebar-section">
+          <div class="sidebar-title">Ø§Ù„ÙØ¦Ø§Øª</div>
+          <ul class="sidebar-list">
+            <li><a href="#" class="active">Ø§Ù„ÙƒÙ„ <span class="count">24</span></a></li>
+            <li><a href="#">Ù‚ÙˆØ§Ù„Ø¨ Ø±Ù‚Ù…ÙŠØ© <span class="count">8</span></a></li>
+            <li><a href="#">Ø¯ÙˆØ±Ø§Øª ØªØ¯Ø±ÙŠØ¨ÙŠØ© <span class="count">6</span></a></li>
+            <li><a href="#">Ù…Ù„ÙØ§Øª Ù…ØµØ¯Ø±ÙŠØ© <span class="count">5</span></a></li>
+            <li><a href="#">Ø­Ø²Ù… Ø§Ù„Ø®Ø·ÙˆØ· <span class="count">5</span></a></li>
+          </ul>
+        </div>
+        <div class="sidebar-section">
+          <div class="sidebar-title">Ù†Ø·Ø§Ù‚ Ø§Ù„Ø³Ø¹Ø±</div>
+          <div class="price-range">
+            <input type="range" min="0" max="500" value="500" id="priceRange" oninput="document.getElementById('maxVal').textContent = this.value + '$'">
+            <div class="price-vals"><span>0$</span><span id="maxVal">500$</span></div>
+          </div>
+        </div>
+        <div class="sidebar-section">
+          <div class="sidebar-title">Ø§Ù„ØªÙ‚ÙŠÙŠÙ…</div>
+          <ul class="sidebar-list">
+            <li><a href="#">â˜…â˜…â˜…â˜…â˜… ÙˆØ£Ø¹Ù„Ù‰</a></li>
+            <li><a href="#">â˜…â˜…â˜…â˜… ÙˆØ£Ø¹Ù„Ù‰</a></li>
+            <li><a href="#">â˜…â˜…â˜… ÙˆØ£Ø¹Ù„Ù‰</a></li>
+          </ul>
+        </div>
+      </aside>
+
+      <!-- PRODUCTS -->
+      <div>
+        <div class="shop-header fade-up">
+          <span class="shop-count">Ø¹Ø±Ø¶ 6 Ù…Ù† Ø£ØµÙ„ 24 Ù…Ù†ØªØ¬</span>
+          <select class="shop-sort">
+            <option>Ø§Ù„Ø£Ø­Ø¯Ø«</option>
+            <option>Ø§Ù„Ø£Ø¹Ù„Ù‰ ØªÙ‚ÙŠÙŠÙ…Ø§Ù‹</option>
+            <option>Ø§Ù„Ø³Ø¹Ø±: Ø§Ù„Ø£Ù‚Ù„ Ø£ÙˆÙ„Ø§Ù‹</option>
+            <option>Ø§Ù„Ø³Ø¹Ø±: Ø§Ù„Ø£Ø¹Ù„Ù‰ Ø£ÙˆÙ„Ø§Ù‹</option>
+          </select>
+        </div>
+
+        <div class="products-grid fade-up">
+          <div class="product-card">
+            <div class="product-img">
+              <div class="product-ph ph-a">â—ˆ</div>
+              <span class="product-badge badge-new">Ø¬Ø¯ÙŠØ¯</span>
+              <div class="product-wishlist">â™¡</div>
+              <div class="product-quick">Ø¹Ø±Ø¶ Ø³Ø±ÙŠØ¹</div>
+            </div>
+            <div class="product-cat">Ù‚Ø§Ù„Ø¨ Ø±Ù‚Ù…ÙŠ</div>
+            <div class="product-name">Ù‚Ø§Ù„Ø¨ Ù‡ÙˆÙŠØ© ÙØ§Ø®Ø±</div>
+            <div class="product-price-row">
+              <span class="product-price">$49</span>
+              <button class="add-cart-btn" onclick="addToCart('Ù‚Ø§Ù„Ø¨ Ù‡ÙˆÙŠØ© ÙØ§Ø®Ø±', 49)">+ Ø³Ù„Ø©</button>
+            </div>
+          </div>
+
+          <div class="product-card">
+            <div class="product-img">
+              <div class="product-ph ph-b">â—‡</div>
+              <span class="product-badge badge-sale">Ø®ØµÙ… 30%</span>
+              <div class="product-wishlist">â™¡</div>
+              <div class="product-quick">Ø¹Ø±Ø¶ Ø³Ø±ÙŠØ¹</div>
+            </div>
+            <div class="product-cat">Ø¯ÙˆØ±Ø© ØªØ¯Ø±ÙŠØ¨ÙŠØ©</div>
+            <div class="product-name">Ø£Ø³Ø±Ø§Ø± Ø§Ù„ØªØµÙ…ÙŠÙ… Ø§Ù„Ù…ØªÙ‚Ø¯Ù…</div>
+            <div class="product-price-row">
+              <span class="product-price">$89 <del>$129</del></span>
+              <button class="add-cart-btn" onclick="addToCart('Ø¯ÙˆØ±Ø© Ø§Ù„ØªØµÙ…ÙŠÙ…', 89)">+ Ø³Ù„Ø©</button>
+            </div>
+          </div>
+
+          <div class="product-card">
+            <div class="product-img">
+              <div class="product-ph ph-c">â—‰</div>
+              <div class="product-wishlist">â™¡</div>
+              <div class="product-quick">Ø¹Ø±Ø¶ Ø³Ø±ÙŠØ¹</div>
+            </div>
+            <div class="product-cat">Ø­Ø²Ù…Ø© Ø®Ø·ÙˆØ·</div>
+            <div class="product-name">Ø®Ø·ÙˆØ· Ø§Ù„Ø¹Ø±ÙˆØ¨Ø© Ø§Ù„Ø­Ø¯ÙŠØ«Ø©</div>
+            <div class="product-price-row">
+              <span class="product-price">$35</span>
+              <button class="add-cart-btn" onclick="addToCart('Ø®Ø·ÙˆØ· Ø§Ù„Ø¹Ø±ÙˆØ¨Ø©', 35)">+ Ø³Ù„Ø©</button>
+            </div>
+          </div>
+
+          <div class="product-card">
+            <div class="product-img">
+              <div class="product-ph ph-d">â–£</div>
+              <span class="product-badge badge-new">Ø¬Ø¯ÙŠØ¯</span>
+              <div class="product-wishlist">â™¡</div>
+              <div class="product-quick">Ø¹Ø±Ø¶ Ø³Ø±ÙŠØ¹</div>
+            </div>
+            <div class="product-cat">Ù…Ù„Ù Ù…ØµØ¯Ø±ÙŠ</div>
+            <div class="product-name">Ù…ÙƒØªØ¨Ø© Ø§Ù„Ø£ÙŠÙ‚ÙˆÙ†Ø§Øª Ø§Ù„Ø°Ù‡Ø¨ÙŠØ©</div>
+            <div class="product-price-row">
+              <span class="product-price">$29</span>
+              <button class="add-cart-btn" onclick="addToCart('Ù…ÙƒØªØ¨Ø© Ø§Ù„Ø£ÙŠÙ‚ÙˆÙ†Ø§Øª', 29)">+ Ø³Ù„Ø©</button>
+            </div>
+          </div>
+
+          <div class="product-card">
+            <div class="product-img">
+              <div class="product-ph ph-e">â—†</div>
+              <div class="product-wishlist">â™¡</div>
+              <div class="product-quick">Ø¹Ø±Ø¶ Ø³Ø±ÙŠØ¹</div>
+            </div>
+            <div class="product-cat">Ø¯ÙˆØ±Ø© ØªØ¯Ø±ÙŠØ¨ÙŠØ©</div>
+            <div class="product-name">Ø¨Ù†Ø§Ø¡ Ø§Ù„Ù‡ÙˆÙŠØ© Ù…Ù† Ø§Ù„ØµÙØ±</div>
+            <div class="product-price-row">
+              <span class="product-price">$149</span>
+              <button class="add-cart-btn" onclick="addToCart('Ø¯ÙˆØ±Ø© Ø§Ù„Ù‡ÙˆÙŠØ©', 149)">+ Ø³Ù„Ø©</button>
+            </div>
+          </div>
+
+          <div class="product-card">
+            <div class="product-img">
+              <div class="product-ph ph-f">â¬¡</div>
+              <span class="product-badge badge-sale">Ø®ØµÙ… 20%</span>
+              <div class="product-wishlist">â™¡</div>
+              <div class="product-quick">Ø¹Ø±Ø¶ Ø³Ø±ÙŠØ¹</div>
+            </div>
+            <div class="product-cat">Ù‚Ø§Ù„Ø¨ Ø±Ù‚Ù…ÙŠ</div>
+            <div class="product-name">Ù…ÙˆØ´Ù† Ø¬Ø±Ø§ÙÙŠÙƒ Ø§Ø­ØªØ±Ø§ÙÙŠ</div>
+            <div class="product-price-row">
+              <span class="product-price">$79 <del>$99</del></span>
+              <button class="add-cart-btn" onclick="addToCart('Ù…ÙˆØ´Ù† Ø¬Ø±Ø§ÙÙŠÙƒ', 79)">+ Ø³Ù„Ø©</button>
+            </div>
+          </div>
+        </div>
+
+        <div style="text-align:center;margin-top:3rem;" class="fade-up">
+          <a href="#" class="btn btn-outline">Ø¹Ø±Ø¶ Ø§Ù„Ù…Ø²ÙŠØ¯</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CART NOTIFICATION -->
+<div class="cart-badge" id="cartBadge">
+  <span>ØªÙ…Øª Ø§Ù„Ø¥Ø¶Ø§ÙØ© Ù„Ù„Ø³Ù„Ø©</span>
+  <span class="gold" id="cartTotal">$0</span>
+</div>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand"><a href="index.html" class="nav-logo">Luminary</a><p>ÙˆÙƒØ§Ù„Ø© Ø¥Ø¨Ø¯Ø§Ø¹ÙŠØ© Ù…ØªØ®ØµØµØ© ÙÙŠ Ø¨Ù†Ø§Ø¡ Ø§Ù„Ù‡ÙˆÙŠØ§Øª Ø§Ù„Ø¨ØµØ±ÙŠØ© ÙˆØªØ¬Ø§Ø±Ø¨ Ø§Ù„ÙˆÙŠØ¨ Ø§Ù„Ø§Ø³ØªØ«Ù†Ø§Ø¦ÙŠØ©.</p></div>
+      <div class="footer-col"><h4>Ø§Ù„Ø´Ø±ÙƒØ©</h4><ul><li><a href="about.html">Ù…Ù† Ù†Ø­Ù†</a></li><li><a href="portfolio.html">Ø£Ø¹Ù…Ø§Ù„Ù†Ø§</a></li><li><a href="contact.html">ØªÙˆØ§ØµÙ„ Ù…Ø¹Ù†Ø§</a></li></ul></div>
+      <div class="footer-col"><h4>Ø®Ø¯Ù…Ø§ØªÙ†Ø§</h4><ul><li><a href="services.html">Ø§Ù„Ù‡ÙˆÙŠØ© Ø§Ù„Ø¨ØµØ±ÙŠØ©</a></li><li><a href="services.html">ØªØ·ÙˆÙŠØ± Ø§Ù„ÙˆÙŠØ¨</a></li><li><a href="services.html">Ø§Ù„ØªØ³ÙˆÙŠÙ‚ Ø§Ù„Ø±Ù‚Ù…ÙŠ</a></li></ul></div>
+      <div class="footer-col"><h4>ØªØ§Ø¨Ø¹Ù†Ø§</h4><ul><li><a href="#">Instagram</a></li><li><a href="#">Behance</a></li><li><a href="#">LinkedIn</a></li></ul></div>
+    </div>
+    <div class="footer-bottom"><span>Â© 2025 Luminary. Ø¬Ù…ÙŠØ¹ Ø§Ù„Ø­Ù‚ÙˆÙ‚ Ù…Ø­ÙÙˆØ¸Ø©.</span><span>ØµÙÙ†Ø¹ Ø¨Ø´ØºÙ âœ¦</span></div>
+  </div>
+</footer>
+
+<script>
+  const burger = document.getElementById('burger');
+  const navLinks = document.getElementById('navLinks');
+  burger.addEventListener('click', () => { burger.classList.toggle('open'); navLinks.classList.toggle('open'); });
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+  let cartTotal = 0;
+  let cartTimeout;
+  function addToCart(name, price) {
+    cartTotal += price;
+    document.getElementById('cartTotal').textContent = '$' + cartTotal;
+    const badge = document.getElementById('cartBadge');
+    badge.classList.add('show');
+    clearTimeout(cartTimeout);
+    cartTimeout = setTimeout(() => badge.classList.remove('show'), 3000);
+  }
+</script>
+</body>
+</html>
