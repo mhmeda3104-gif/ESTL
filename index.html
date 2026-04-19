@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Luminary — Home</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex; align-items: center;
+      position: relative; overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 70% 50%, rgba(201,168,76,0.06) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 80% at 20% 80%, rgba(201,168,76,0.04) 0%, transparent 60%);
+    }
+    .hero-grid-lines {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(201,168,76,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(201,168,76,0.04) 1px, transparent 1px);
+      background-size: 80px 80px;
+    }
+    .hero-content { position: relative; z-index: 1; padding-top: 6rem; }
+    .hero-eyebrow { display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; }
+    .hero-eyebrow span { font-size: 0.7rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold); }
+    .hero-eyebrow::before { content: ''; display: block; width: 40px; height: 1px; background: var(--gold); }
+    html[lang="ar"] .hero-eyebrow { flex-direction: row-reverse; justify-content: flex-end; }
+    html[lang="ar"] .hero-eyebrow::before { display: none; }
+    html[lang="ar"] .hero-eyebrow::after { content: ''; display: block; width: 40px; height: 1px; background: var(--gold); }
+    .hero h1 { margin-bottom: 1.5rem; }
+    .hero-sub { font-size: 1.1rem; color: var(--text-muted); max-width: 480px; margin-bottom: 3rem; }
+    .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .hero-scroll {
+      position: absolute; bottom: 3rem; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+      font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-dim);
+    }
+    .hero-scroll::after {
+      content: ''; display: block; width: 1px; height: 50px;
+      background: linear-gradient(to bottom, var(--gold), transparent);
+      animation: scrollLine 2s ease-in-out infinite;
+    }
+    @keyframes scrollLine { 0%,100%{opacity:0.3} 50%{opacity:1} }
+
+    /* STATS */
+    .stats { background: var(--bg2); padding: 4rem 0; border-top: 1px solid var(--border-dim); border-bottom: 1px solid var(--border-dim); }
+    .stats-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 2rem; }
+    .stat { text-align: center; padding: 1rem; border-right: 1px solid var(--border-dim); }
+    html[lang="ar"] .stat { border-right: none; border-left: 1px solid var(--border-dim); }
+    .stat:last-child { border-right: none; }
+    html[lang="ar"] .stat:last-child { border-left: none; }
+    .stat-num { font-family: var(--font-display); font-size: 3rem; color: var(--gold); line-height: 1; margin-bottom: 0.25rem; }
+    .stat-label { font-size: 0.8rem; color: var(--text-muted); letter-spacing: 0.1em; }
+
+    /* SERVICES */
+    .services-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: var(--border-dim); border: 1px solid var(--border-dim); }
+    .service-card { background: var(--bg); padding: 2.5rem; transition: background 0.3s; }
+    .service-card:hover { background: var(--bg3); }
+    .service-icon { font-size: 1.5rem; margin-bottom: 1rem; }
+    .service-card h3 { margin-bottom: 0.75rem; }
+    .service-card p { font-size: 0.875rem; color: var(--text-muted); }
+    .service-arrow { display: inline-block; margin-top: 1.5rem; font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold); text-decoration: none; }
+
+    /* WORK */
+    .work-grid { display: grid; grid-template-columns: 1.5fr 1fr; grid-template-rows: auto auto; gap: 1rem; }
+    .work-item { background: var(--bg3); overflow: hidden; position: relative; cursor: pointer; }
+    .work-item.large { grid-row: span 2; }
+    .work-thumb { width: 100%; aspect-ratio: 4/3; display: block; background: var(--bg3); }
+    .work-item.large .work-thumb { aspect-ratio: 3/4; }
+    .work-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 50%);
+      display: flex; flex-direction: column; justify-content: flex-end;
+      padding: 2rem; opacity: 0; transition: opacity 0.4s;
+    }
+    .work-item:hover .work-overlay { opacity: 1; }
+    .work-overlay .tag { font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); }
+    .work-overlay h3 { font-size: 1.25rem; }
+    .work-ph-1 { background: linear-gradient(135deg, #1a1a1a 0%, #2a2015 100%); min-height: 300px; display:flex;align-items:center;justify-content:center; }
+    .work-ph-2 { background: linear-gradient(135deg, #151a1a 0%, #152015 100%); min-height: 200px; display:flex;align-items:center;justify-content:center; }
+    .work-ph-3 { background: linear-gradient(135deg, #1a1518 0%, #201520 100%); min-height: 200px; display:flex;align-items:center;justify-content:center; }
+    .work-ph-label { font-family: var(--font-display); font-size: 3rem; color: rgba(201,168,76,0.2); }
+
+    /* TESTIMONIAL */
+    .testimonial-section { background: var(--bg2); }
+    .testimonial { max-width: 700px; margin: 0 auto; text-align: center; }
+    .quote { font-family: var(--font-display); font-size: clamp(1.3rem, 2.5vw, 2rem); font-style: italic; font-weight: 300; line-height: 1.5; margin-bottom: 2rem; }
+    html[lang="ar"] .quote { font-style: normal; font-family: var(--font-arabic); }
+    .quote::before { content: '"'; color: var(--gold); }
+    .quote::after  { content: '"'; color: var(--gold); }
+    .testimonial-author { font-size: 0.8rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-muted); }
+
+    /* CTA */
+    .cta-section { position: relative; overflow: hidden; text-align: center; padding: 8rem 0; }
+    .cta-section::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 80% at 50% 50%, rgba(201,168,76,0.08) 0%, transparent 70%); }
+    .cta-section h2,
+    .cta-section p,
+    .cta-section .btn { position: relative; }
+    .cta-section h2 { margin-bottom: 1.5rem; }
+    .cta-section p { color: var(--text-muted); margin-bottom: 3rem; }
+
+    @media(max-width: 900px) {
+      .stats-grid { grid-template-columns: repeat(2,1fr); }
+      .services-grid { grid-template-columns: 1fr; }
+      .work-grid { grid-template-columns: 1fr; }
+      .work-item.large { grid-row: auto; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">Luminary</a>
+  <button class="hamburger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="index.html" class="active" data-en="Home" data-ar="الرئيسية">Home</a></li>
+    <li><a href="about.html" data-en="About" data-ar="من نحن">About</a></li>
+    <li><a href="services.html" data-en="Services" data-ar="خدماتنا">Services</a></li>
+    <li><a href="portfolio.html" data-en="Portfolio" data-ar="أعمالنا">Portfolio</a></li>
+    <li><a href="shop.html" data-en="Shop" data-ar="المتجر">Shop</a></li>
+    <li><a href="contact.html" data-en="Contact" data-ar="تواصل">Contact</a></li>
+  </ul>
+  <button class="lang-toggle" id="langToggle" onclick="toggleLang()">عربي</button>
+  <a href="contact.html" class="nav-cta" data-en="Start With Us" data-ar="ابدأ معنا">Start With Us</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid-lines"></div>
+  <div class="container hero-content">
+    <div class="hero-eyebrow"><span data-en="Specialized Creative Agency" data-ar="وكالة إبداعية متخصصة">Specialized Creative Agency</span></div>
+    <h1 data-en="We Craft<br><span class='gold italic'>Exceptional</span><br>Experiences" data-ar="نصنع<br><span class='gold italic'>تجارب</span><br>استثنائية">We Craft<br><span class="gold italic">Exceptional</span><br>Experiences</h1>
+    <p class="hero-sub" data-en="We merge creative vision with precise digital execution to build brands that are lived — not just seen." data-ar="نجمع بين الرؤية الإبداعية والتنفيذ الرقمي الدقيق لنبني علامات تجارية تُعاش ولا تُنسى.">We merge creative vision with precise digital execution to build brands that are lived — not just seen.</p>
+    <div class="hero-actions">
+      <a href="portfolio.html" class="btn btn-gold" data-en="Explore Our Work" data-ar="استكشف أعمالنا">Explore Our Work</a>
+      <a href="about.html" class="btn btn-outline" data-en="Learn More" data-ar="اعرف أكثر">Learn More</a>
+    </div>
+  </div>
+  <div class="hero-scroll" data-en="scroll" data-ar="اسحب">scroll</div>
+</section>
+
+<!-- STATS -->
+<section class="stats">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat fade-up"><div class="stat-num">+120</div><div class="stat-label" data-en="Projects Completed" data-ar="مشروع منجز">Projects Completed</div></div>
+      <div class="stat fade-up" style="transition-delay:.1s"><div class="stat-num">8</div><div class="stat-label" data-en="Years of Experience" data-ar="سنوات خبرة">Years of Experience</div></div>
+      <div class="stat fade-up" style="transition-delay:.2s"><div class="stat-num">40+</div><div class="stat-label" data-en="Happy Clients" data-ar="عميل راضٍ">Happy Clients</div></div>
+      <div class="stat fade-up" style="transition-delay:.3s"><div class="stat-num">15</div><div class="stat-label" data-en="International Awards" data-ar="جائزة دولية">International Awards</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="section">
+  <div class="container">
+    <div class="section-tag fade-up" data-en="What We Offer" data-ar="ما نقدمه">What We Offer</div>
+    <h2 class="fade-up" data-en="Our <span class='italic gold'>Specialized</span><br>Services" data-ar="خدماتنا<br><span class='italic gold'>المتخصصة</span>">Our <span class="italic gold">Specialized</span><br>Services</h2>
+    <div class="divider fade-up"></div>
+    <br><br>
+    <div class="services-grid fade-up">
+      <div class="service-card">
+        <div class="service-icon">◈</div>
+        <h3 data-en="Visual Identity" data-ar="الهوية البصرية">Visual Identity</h3>
+        <p data-en="We build brands with a clear character that reflects your essence and distinguishes you in the market." data-ar="نبني علامات تجارية ذات شخصية واضحة تعكس جوهر عملك وتُميزك في السوق.">We build brands with a clear character that reflects your essence and distinguishes you in the market.</p>
+        <a href="services.html" class="service-arrow" data-en="Discover →" data-ar="اكتشف ←">Discover →</a>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">◇</div>
+        <h3 data-en="Web Development" data-ar="تطوير الويب">Web Development</h3>
+        <p data-en="Fast, elegant digital platforms that convert visitors into real customers." data-ar="مواقع ومنصات رقمية سريعة وأنيقة تحوّل الزوار إلى عملاء حقيقيين.">Fast, elegant digital platforms that convert visitors into real customers.</p>
+        <a href="services.html" class="service-arrow" data-en="Discover →" data-ar="اكتشف ←">Discover →</a>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">◉</div>
+        <h3 data-en="Marketing Strategy" data-ar="استراتيجية التسويق">Marketing Strategy</h3>
+        <p data-en="Data-driven marketing plans built on creative vision to achieve measurable growth." data-ar="خطط تسويقية مبنية على بيانات دقيقة ورؤية إبداعية تحقق نتائج قابلة للقياس.">Data-driven marketing plans built on creative vision to achieve measurable growth.</p>
+        <a href="services.html" class="service-arrow" data-en="Discover →" data-ar="اكتشف ←">Discover →</a>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:3rem;" class="fade-up">
+      <a href="services.html" class="btn btn-outline" data-en="All Services" data-ar="جميع الخدمات">All Services</a>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURED WORK -->
+<section class="section" style="background:var(--bg2)">
+  <div class="container">
+    <div class="section-tag fade-up" data-en="From Our Portfolio" data-ar="من أعمالنا">From Our Portfolio</div>
+    <h2 class="fade-up" data-en="Selected<br><span class='italic gold'>Works</span>" data-ar="مختارات<br><span class='italic gold'>الأعمال</span>">Selected<br><span class="italic gold">Works</span></h2>
+    <div class="divider fade-up"></div>
+    <br><br>
+    <div class="work-grid fade-up">
+      <div class="work-item large">
+        <div class="work-ph-1 work-thumb"><span class="work-ph-label">01</span></div>
+        <div class="work-overlay">
+          <span class="tag" data-en="Visual Identity" data-ar="هوية بصرية">Visual Identity</span>
+          <h3 data-en="Nova Project" data-ar="مشروع نوفا">Nova Project</h3>
+        </div>
+      </div>
+      <div class="work-item">
+        <div class="work-ph-2 work-thumb"><span class="work-ph-label">02</span></div>
+        <div class="work-overlay">
+          <span class="tag" data-en="Web Development" data-ar="تطوير ويب">Web Development</span>
+          <h3 data-en="Aura Platform" data-ar="منصة أورا">Aura Platform</h3>
+        </div>
+      </div>
+      <div class="work-item">
+        <div class="work-ph-3 work-thumb"><span class="work-ph-label">03</span></div>
+        <div class="work-overlay">
+          <span class="tag" data-en="Digital Marketing" data-ar="تسويق رقمي">Digital Marketing</span>
+          <h3 data-en="Golden Campaign" data-ar="حملة ذهبية">Golden Campaign</h3>
+        </div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:3rem;" class="fade-up">
+      <a href="portfolio.html" class="btn btn-outline" data-en="View All Work" data-ar="عرض كل الأعمال">View All Work</a>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIAL -->
+<section class="section testimonial-section">
+  <div class="container">
+    <div class="testimonial fade-up">
+      <div class="section-tag" data-en="What Our Clients Say" data-ar="ماذا قال عملاؤنا">What Our Clients Say</div>
+      <p class="quote" data-en="Working with Luminary was an exceptional experience in every sense — from their deep understanding of our needs to an execution that surpassed all expectations." data-ar="تعاملت مع Luminary وكانت التجربة استثنائية بكل معنى الكلمة — من الفهم العميق لاحتياجاتنا إلى التنفيذ الذي تجاوز توقعاتنا.">Working with Luminary was an exceptional experience in every sense — from their deep understanding of our needs to an execution that surpassed all expectations.</p>
+      <p class="testimonial-author" data-en="Sara Al-Ahmadi — CEO, Falak Group" data-ar="سارة الأحمدي — المديرة التنفيذية، مجموعة فلك">Sara Al-Ahmadi — CEO, Falak Group</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="container">
+    <div class="section-tag fade-up" data-en="Begin Your Journey" data-ar="ابدأ رحلتك">Begin Your Journey</div>
+    <h2 class="fade-up" data-en="Are You Ready to Build<br>Something <span class='italic gold'>Exceptional</span>?" data-ar="هل أنت مستعد لبناء<br>شيء <span class='italic gold'>استثنائي</span>؟">Are You Ready to Build<br>Something <span class="italic gold">Exceptional</span>?</h2>
+    <p class="fade-up" data-en="Let us turn your idea into a tangible reality that leaves a lasting mark." data-ar="دعنا نحوّل فكرتك إلى حقيقة ملموسة تترك أثراً">Let us turn your idea into a tangible reality that leaves a lasting mark.</p>
+    <div class="fade-up">
+      <a href="contact.html" class="btn btn-gold" data-en="Talk to Our Team" data-ar="تحدث مع فريقنا">Talk to Our Team</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="index.html" class="nav-logo">Luminary</a>
+        <p data-en="A creative agency specializing in visual identity and exceptional web experiences." data-ar="وكالة إبداعية متخصصة في بناء الهويات البصرية وتجارب الويب الاستثنائية.">A creative agency specializing in visual identity and exceptional web experiences.</p>
+      </div>
+      <div class="footer-col">
+        <h4 data-en="Company" data-ar="الشركة">Company</h4>
+        <ul>
+          <li><a href="about.html" data-en="About Us" data-ar="من نحن">About Us</a></li>
+          <li><a href="portfolio.html" data-en="Our Work" data-ar="أعمالنا">Our Work</a></li>
+          <li><a href="contact.html" data-en="Contact Us" data-ar="تواصل معنا">Contact Us</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4 data-en="Services" data-ar="خدماتنا">Services</h4>
+        <ul>
+          <li><a href="services.html" data-en="Visual Identity" data-ar="الهوية البصرية">Visual Identity</a></li>
+          <li><a href="services.html" data-en="Web Development" data-ar="تطوير الويب">Web Development</a></li>
+          <li><a href="services.html" data-en="Digital Marketing" data-ar="التسويق الرقمي">Digital Marketing</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4 data-en="Follow Us" data-ar="تابعنا">Follow Us</h4>
+        <ul>
+          <li><a href="#">Instagram</a></li>
+          <li><a href="#">Behance</a></li>
+          <li><a href="#">LinkedIn</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span data-en="© 2025 Luminary. All rights reserved." data-ar="© 2025 Luminary. جميع الحقوق محفوظة.">© 2025 Luminary. All rights reserved.</span>
+      <span data-en="Made with passion ✦" data-ar="صُنع بشغف ✦">Made with passion ✦</span>
+    </div>
+  </div>
+</footer>
+
+<script src="lang.js"></script>
+<script>
+  const burger = document.getElementById('burger');
+  const navLinks = document.getElementById('navLinks');
+  burger.addEventListener('click', () => { burger.classList.toggle('open'); navLinks.classList.toggle('open'); });
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
