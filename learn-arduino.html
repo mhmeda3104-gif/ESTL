@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ESTL — Learn With Me: Arduino & Microcontrollers</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* ── Page Hero ── */
+    .learn-hero {
+      padding: 10rem 0 5rem;
+      position: relative;
+      overflow: hidden;
+      background: var(--bg);
+    }
+    .learn-hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 70% 80% at 80% 40%, rgba(104,26,21,0.18) 0%, transparent 65%),
+        radial-gradient(ellipse 50% 60% at 10% 70%, rgba(188,174,29,0.07) 0%, transparent 60%);
+    }
+    .learn-hero-inner { position: relative; }
+    .learn-badge-hero {
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      font-size: 0.65rem; letter-spacing: 0.3em; text-transform: uppercase;
+      color: var(--bg); background: var(--crimson);
+      padding: 0.4rem 1rem; margin-bottom: 1.5rem;
+      filter: brightness(1.3);
+    }
+    .learn-hero h1 { margin-bottom: 1rem; }
+    .learn-hero h1 em { font-style: italic; color: var(--gold); }
+    .learn-hero p { font-size: 1.1rem; color: var(--text-muted); max-width: 560px; margin-bottom: 2.5rem; }
+    .hero-meta { display: flex; gap: 2rem; flex-wrap: wrap; margin-top: 1rem; }
+    .meta-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; color: var(--text-muted); }
+    .meta-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); }
+
+    /* ── TOC Bar ── */
+    .toc-bar {
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border-dim);
+      padding: 0;
+      position: sticky;
+      top: 72px;
+      z-index: 50;
+    }
+    .toc-inner {
+      display: flex; gap: 0; overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .toc-inner::-webkit-scrollbar { display: none; }
+    .toc-link {
+      flex-shrink: 0;
+      padding: 1rem 1.5rem;
+      font-size: 0.68rem; letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--text-muted); text-decoration: none;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+    }
+    .toc-link:hover, .toc-link.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+    /* ── Slide / Section Layout ── */
+    .learn-section { padding: 5rem 0; }
+    .learn-section:nth-child(odd) { background: var(--bg2); }
+    .slide-header { margin-bottom: 3rem; }
+    .slide-num {
+      font-family: var(--font-display);
+      font-size: 5rem; font-weight: 300;
+      color: rgba(188,174,29,0.08);
+      line-height: 1;
+      margin-bottom: -1rem;
+      display: block;
+    }
+    .slide-header h2 { position: relative; z-index: 1; }
+
+    /* ── Card Grid ── */
+    .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border-dim); }
+    .card-grid-2 { grid-template-columns: repeat(2, 1fr); }
+    .card-grid-4 { grid-template-columns: repeat(4, 1fr); }
+    .learn-card {
+      background: var(--bg);
+      padding: 2rem;
+      transition: background 0.3s;
+    }
+    .learn-card:hover { background: var(--bg3); }
+    .card-icon {
+      width: 44px; height: 44px;
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; margin-bottom: 1.25rem;
+      color: var(--gold);
+    }
+    .learn-card h3 { font-size: 1.15rem; margin-bottom: 0.65rem; }
+    .learn-card p { font-size: 0.875rem; color: var(--text-muted); line-height: 1.75; }
+    .learn-card .card-tag {
+      display: inline-block; margin-top: 1rem;
+      font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--gold); border: 1px solid var(--border-dim); padding: 0.2rem 0.6rem;
+    }
+
+    /* ── Compare Table ── */
+    .compare-table {
+      width: 100%; border-collapse: collapse;
+      font-size: 0.875rem;
+    }
+    .compare-table th {
+      font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--gold); border-bottom: 1px solid var(--border);
+      padding: 1rem 1.5rem; text-align: left; background: var(--bg2);
+    }
+    html[lang="ar"] .compare-table th { text-align: right; }
+    .compare-table td {
+      padding: 0.85rem 1.5rem;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border-dim);
+    }
+    .compare-table tr:hover td { background: var(--bg3); color: var(--text); }
+    .compare-table .td-label { color: var(--text); font-weight: 400; }
+    .compare-table .td-highlight { color: var(--gold); }
+    .compare-table .td-crimson { color: #c44; }
+
+    /* ── Board Visual ── */
+    .board-visual {
+      background: var(--bg3);
+      border: 1px solid var(--border-dim);
+      padding: 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .board-visual::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 60% 60% at 50% 50%, rgba(188,174,29,0.05) 0%, transparent 70%);
+    }
+    .board-pins {
+      display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: 1.5rem;
+    }
+    .pin {
+      width: 32px; height: 32px;
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.55rem; color: var(--text-dim);
+      cursor: default; transition: all 0.2s;
+      position: relative;
+    }
+    .pin:hover { border-color: var(--gold); color: var(--gold); }
+    .pin.digital { border-color: rgba(188,174,29,0.25); }
+    .pin.analog { border-color: rgba(104,26,21,0.4); }
+    .pin.power { border-color: rgba(255,255,255,0.15); }
+    .pin.special { border-color: rgba(100,180,100,0.3); }
+    .pin-legend { display: flex; gap: 1.5rem; flex-wrap: wrap; margin-top: 1rem; }
+    .pin-legend-item { display: flex; align-items: center; gap: 0.4rem; font-size: 0.72rem; color: var(--text-muted); }
+    .pin-legend-dot { width: 10px; height: 10px; border-width: 1px; border-style: solid; }
+
+    /* ── Code Block ── */
+    .code-block {
+      background: #0d0d0a;
+      border: 1px solid var(--border-dim);
+      border-left: 3px solid var(--gold);
+      padding: 1.5rem 2rem;
+      font-family: 'Courier New', monospace;
+      font-size: 0.82rem;
+      line-height: 1.9;
+      color: #c8c0a0;
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      position: relative;
+    }
+    .code-block .c-comment { color: #5a7a55; }
+    .code-block .c-keyword { color: #BCAE1D; }
+    .code-block .c-function { color: #c88; }
+    .code-block .c-number  { color: #8bb; }
+    .code-block .c-string  { color: #8a8; }
+    .code-label {
+      position: absolute; top: 0.6rem; right: 1rem;
+      font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--text-dim);
+    }
+
+    /* ── Step List ── */
+    .step-list { list-style: none; counter-reset: steps; }
+    .step-list li {
+      counter-increment: steps;
+      display: flex; gap: 1.5rem; align-items: flex-start;
+      padding: 1.25rem 0;
+      border-bottom: 1px solid var(--border-dim);
+    }
+    .step-list li::before {
+      content: counter(steps, decimal-leading-zero);
+      font-family: var(--font-display); font-size: 1.6rem; font-weight: 300;
+      color: var(--gold); flex-shrink: 0; line-height: 1; margin-top: 0.1rem;
+    }
+    .step-content h4 { font-size: 0.9rem; margin-bottom: 0.35rem; text-transform: none; letter-spacing: 0; }
+    .step-content p { font-size: 0.875rem; color: var(--text-muted); }
+
+    /* ── MCU Spec Card ── */
+    .spec-card {
+      border: 1px solid var(--border-dim);
+      padding: 0;
+      overflow: hidden;
+    }
+    .spec-card-head {
+      padding: 1.25rem 1.5rem;
+      background: var(--bg3);
+      border-bottom: 1px solid var(--border-dim);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .spec-card-head h3 { font-size: 1.1rem; margin: 0; }
+    .spec-badge {
+      font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase;
+      padding: 0.2rem 0.6rem; border: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+    .spec-badge.popular { border-color: var(--gold); color: var(--gold); }
+    .spec-badge.wifi { border-color: #8b8; color: #8b8; }
+    .spec-badge.advanced { border-color: rgba(104,26,21,0.6); color: #c55; }
+    .spec-rows { padding: 1rem 0; }
+    .spec-row {
+      display: flex; justify-content: space-between;
+      padding: 0.5rem 1.5rem;
+      font-size: 0.82rem;
+      border-bottom: 1px solid var(--border-dim);
+    }
+    .spec-row:last-child { border-bottom: none; }
+    .spec-key { color: var(--text-muted); }
+    .spec-val { color: var(--text); text-align: right; }
+    .spec-val.gold { color: var(--gold); }
+    html[lang="ar"] .spec-row { flex-direction: row-reverse; }
+    html[lang="ar"] .spec-val { text-align: left; }
+
+    /* ── Quiz CTA ── */
+    .quiz-cta {
+      background: var(--bg3);
+      border: 1px solid var(--border-dim);
+      padding: 3rem;
+      text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .quiz-cta::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 70% 80% at 50% 50%, rgba(104,26,21,0.12) 0%, transparent 70%);
+    }
+    .quiz-cta > * { position: relative; }
+    .quiz-cta h3 { font-size: 1.8rem; margin-bottom: 0.75rem; }
+    .quiz-cta p { color: var(--text-muted); margin-bottom: 2rem; }
+
+    /* ── Two-col layout ── */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; }
+    .two-col-3-2 { grid-template-columns: 3fr 2fr; }
+
+    @media(max-width: 900px) {
+      .card-grid, .card-grid-2, .card-grid-4 { grid-template-columns: 1fr; }
+      .two-col, .two-col-3-2 { grid-template-columns: 1fr; }
+    }
+    @media(max-width: 600px) {
+      .learn-hero { padding: 8rem 0 4rem; }
+      .slide-num { font-size: 3.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo"><span class="logo-e">E</span><span class="logo-s">S</span><span class="logo-t">T</span><span class="logo-l">L</span></a>
+  <button class="hamburger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="index.html" data-en="Home" data-ar="الرئيسية">Home</a></li>
+    <li><a href="about.html" data-en="About" data-ar="من نحن">About</a></li>
+    <li><a href="services.html" data-en="Services" data-ar="خدماتنا">Services</a></li>
+    <li><a href="portfolio.html" data-en="Portfolio" data-ar="أعمالنا">Portfolio</a></li>
+    <li><a href="shop.html" data-en="Shop" data-ar="المتجر">Shop</a></li>
+    <li><a href="contact.html" data-en="Contact" data-ar="تواصل">Contact</a></li>
+    <li><a href="learn-arduino.html" class="active" style="color:var(--gold)" data-en="Learn" data-ar="تعلّم">Learn</a></li>
+  </ul>
+  <button class="lang-toggle" id="langToggle" onclick="toggleLang()">عربي</button>
+  <a href="contact.html" class="nav-cta" data-en="Start With Us" data-ar="ابدأ معنا">Start With Us</a>
+</nav>
+
+<!-- HERO -->
+<section class="learn-hero">
+  <div class="container learn-hero-inner">
+    <span class="learn-badge-hero" data-en="✦ Learn With Me" data-ar="✦ تعلّم معي">✦ Learn With Me</span>
+    <div class="hero-eyebrow" style="margin-bottom:1rem;">
+      <span data-en="Embedded Systems & Microcontrollers" data-ar="الأنظمة المدمجة والمتحكمات الدقيقة">Embedded Systems &amp; Microcontrollers</span>
+    </div>
+    <h1 class="fade-up" data-en="Arduino, WEMOS & <em>Microcontrollers</em>" data-ar="أردوينو، ويموس و<em>المتحكمات</em>">Arduino, WEMOS &amp; <em>Microcontrollers</em></h1>
+    <p class="fade-up" data-en="A structured presentation for students covering the fundamentals of Arduino, WEMOS D1 R32, and popular microcontrollers — from architecture to your first circuit." data-ar="عرض منظّم للطلاب يغطي أساسيات أردوينو، ويموس D1 R32، والمتحكمات الشائعة — من المعمارية حتى أول دائرة كهربائية.">A structured presentation for students covering the fundamentals of Arduino, WEMOS D1 R32, and popular microcontrollers — from architecture to your first circuit.</p>
+    <div class="hero-meta fade-up">
+      <div class="meta-item"><span class="meta-dot"></span><span data-en="5 Modules" data-ar="٥ وحدات">5 Modules</span></div>
+      <div class="meta-item"><span class="meta-dot"></span><span data-en="Beginner Friendly" data-ar="مناسب للمبتدئين">Beginner Friendly</span></div>
+      <div class="meta-item"><span class="meta-dot"></span><span data-en="Code Examples Included" data-ar="أمثلة كود مضمّنة">Code Examples Included</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- TOC -->
+<div class="toc-bar">
+  <div class="container">
+    <div class="toc-inner">
+      <a href="#intro"       class="toc-link active" data-en="01 What is a MCU?" data-ar="٠١ ما هو المتحكم؟">01 What is a MCU?</a>
+      <a href="#arduino"     class="toc-link"        data-en="02 Arduino"         data-ar="٠٢ أردوينو">02 Arduino</a>
+      <a href="#wemos"       class="toc-link"        data-en="03 WEMOS D1 R32"    data-ar="٠٣ ويموس D1 R32">03 WEMOS D1 R32</a>
+      <a href="#controllers" class="toc-link"        data-en="04 MCU Comparison"  data-ar="٠٤ مقارنة المتحكمات">04 MCU Comparison</a>
+      <a href="#getstarted"  class="toc-link"        data-en="05 Get Started"     data-ar="٠٥ ابدأ الآن">05 Get Started</a>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     MODULE 01 — What is a Microcontroller?
+═══════════════════════════════════════ -->
+<section class="learn-section section" id="intro">
+  <div class="container">
+    <div class="slide-header fade-up">
+      <span class="slide-num">01</span>
+      <span class="section-tag" data-en="Foundation" data-ar="الأساس">Foundation</span>
+      <h2 data-en="What Is a <span class='italic gold'>Microcontroller?</span>" data-ar="ما هو <span class='italic gold'>المتحكم الدقيق؟</span>">What Is a <span class="italic gold">Microcontroller?</span></h2>
+      <div class="divider"></div>
+    </div>
+
+    <div class="two-col fade-up">
+      <div>
+        <p style="color:var(--text-muted);margin-bottom:1.25rem;" data-en="A microcontroller (MCU) is a compact integrated circuit that combines a processor core, memory, and programmable input/output peripherals — all on a single chip. Unlike a general-purpose computer, an MCU is designed to control specific tasks in embedded systems." data-ar="المتحكم الدقيق (MCU) هو دائرة متكاملة مدمجة تجمع نواة المعالج والذاكرة ومنافذ إدخال/إخراج قابلة للبرمجة — كلها على رقاقة واحدة. على خلاف الحاسوب العام، صُمّم المتحكم للتحكم في مهام محددة داخل الأنظمة المدمجة.">A microcontroller (MCU) is a compact integrated circuit that combines a processor core, memory, and programmable input/output peripherals — all on a single chip. Unlike a general-purpose computer, an MCU is designed to control specific tasks in embedded systems.</p>
+
+        <ul class="step-list" style="margin-bottom:2rem;">
+          <li>
+            <div class="step-content">
+              <h4 data-en="CPU (Processor Core)" data-ar="نواة المعالج (CPU)">CPU (Processor Core)</h4>
+              <p data-en="Executes instructions, performs arithmetic and logic operations. Runs at speeds from 8 MHz to 240 MHz depending on the MCU." data-ar="تُنفّذ التعليمات وتُجري العمليات الحسابية والمنطقية. تعمل بسرعات من ٨ ميغاهرتز إلى ٢٤٠ ميغاهرتز.">Executes instructions, performs arithmetic and logic operations. Runs at speeds from 8 MHz to 240 MHz depending on the MCU.</p>
+            </div>
+          </li>
+          <li>
+            <div class="step-content">
+              <h4 data-en="Flash Memory (Program Storage)" data-ar="ذاكرة فلاش (تخزين البرنامج)">Flash Memory (Program Storage)</h4>
+              <p data-en="Stores the code you write. Non-volatile — persists when power is off. Typically 32 KB to 4 MB." data-ar="تخزّن الكود الذي تكتبه. غير متطايرة — تبقى عند قطع الكهرباء. عادةً ٣٢ كيلوبايت إلى ٤ ميغابايت.">Stores the code you write. Non-volatile — persists when power is off. Typically 32 KB to 4 MB.</p>
+            </div>
+          </li>
+          <li>
+            <div class="step-content">
+              <h4 data-en="RAM (Working Memory)" data-ar="ذاكرة العمل (RAM)">RAM (Working Memory)</h4>
+              <p data-en="Temporary storage used during program execution. Variables, buffers, and the call stack live here." data-ar="تخزين مؤقت يُستخدم أثناء تشغيل البرنامج. المتغيرات والمخازن المؤقتة تعيش هنا.">Temporary storage used during program execution. Variables, buffers, and the call stack live here.</p>
+            </div>
+          </li>
+          <li>
+            <div class="step-content">
+              <h4 data-en="GPIO Pins (Input/Output)" data-ar="أطراف GPIO">GPIO Pins (Input/Output)</h4>
+              <p data-en="General Purpose Input/Output — the physical pins that let you connect sensors, LEDs, motors, and other components." data-ar="أطراف إدخال وإخراج عامة — تتيح لك توصيل المستشعرات والمصابيح والمحركات والمكونات الأخرى.">General Purpose Input/Output — the physical pins that let you connect sensors, LEDs, motors, and other components.</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="board-visual fade-up">
+          <span class="section-tag" data-en="Generic MCU Architecture" data-ar="معمارية متحكم عام">Generic MCU Architecture</span>
+          <h3 data-en="Inside a Chip" data-ar="داخل الرقاقة">Inside a Chip</h3>
+          <div style="margin-top:1.5rem;display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border-dim);">
+            <div style="background:var(--bg);padding:1rem;text-align:center;">
+              <div style="font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);margin-bottom:0.5rem;" data-en="CPU Core" data-ar="نواة CPU">CPU Core</div>
+              <div style="font-family:var(--font-display);font-size:1.5rem;color:var(--text-dim);">⬡</div>
+            </div>
+            <div style="background:var(--bg);padding:1rem;text-align:center;">
+              <div style="font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);margin-bottom:0.5rem;" data-en="Flash ROM" data-ar="ذاكرة فلاش">Flash ROM</div>
+              <div style="font-family:var(--font-display);font-size:1.5rem;color:var(--text-dim);">▦</div>
+            </div>
+            <div style="background:var(--bg);padding:1rem;text-align:center;">
+              <div style="font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);margin-bottom:0.5rem;">RAM</div>
+              <div style="font-family:var(--font-display);font-size:1.5rem;color:var(--text-dim);">▤</div>
+            </div>
+            <div style="background:var(--bg);padding:1rem;text-align:center;">
+              <div style="font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);margin-bottom:0.5rem;" data-en="Peripherals" data-ar="الملحقات">Peripherals</div>
+              <div style="font-family:var(--font-display);font-size:1.5rem;color:var(--text-dim);">⊞</div>
+            </div>
+          </div>
+          <div style="margin-top:1.5rem;font-size:0.8rem;color:var(--text-muted);" data-en="All components communicate via an internal bus system." data-ar="تتواصل جميع المكونات عبر نظام حافلة داخلي.">All components communicate via an internal bus system.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     MODULE 02 — Arduino
+═══════════════════════════════════════ -->
+<section class="learn-section section" id="arduino">
+  <div class="container">
+    <div class="slide-header fade-up">
+      <span class="slide-num">02</span>
+      <span class="section-tag" data-en="Platform" data-ar="المنصة">Platform</span>
+      <h2 data-en="Arduino — The <span class='italic gold'>Open Source</span> Platform" data-ar="أردوينو — منصة <span class='italic gold'>المصدر المفتوح</span>">Arduino — The <span class="italic gold">Open Source</span> Platform</h2>
+      <div class="divider"></div>
+      <p style="color:var(--text-muted);max-width:600px;margin-top:1rem;" data-en="Arduino is an open-source electronics platform that pairs simple hardware with an easy-to-use software environment. It was designed to make programming microcontrollers accessible to everyone — artists, designers, hobbyists, and students." data-ar="أردوينو منصة إلكترونيات مفتوحة المصدر تجمع بين عتاد بسيط وبيئة برمجية سهلة الاستخدام. صُمِّمت لجعل برمجة المتحكمات في متناول الجميع — فنانين ومصممين وهواة وطلاباً.">Arduino is an open-source electronics platform that pairs simple hardware with an easy-to-use software environment. It was designed to make programming microcontrollers accessible to everyone — artists, designers, hobbyists, and students.</p>
+    </div>
+
+    <div class="card-grid fade-up" style="margin-bottom:3rem;">
+      <div class="learn-card">
+        <div class="card-icon">◈</div>
+        <h3 data-en="Arduino Uno" data-ar="أردوينو أونو">Arduino Uno</h3>
+        <p data-en="The most popular board. Uses the ATmega328P chip. 14 digital I/O pins (6 PWM), 6 analog inputs, 32 KB Flash, 2 KB SRAM, 16 MHz clock. Best for beginners." data-ar="اللوحة الأكثر شيوعاً. تستخدم شريحة ATmega328P. ١٤ طرف رقمي (٦ PWM)، ٦ مدخلات تماثلية، ٣٢ كيلوبايت فلاش، ٢ كيلوبايت SRAM، ساعة ١٦ ميغاهرتز. الأفضل للمبتدئين.">The most popular board. Uses the ATmega328P chip. 14 digital I/O pins (6 PWM), 6 analog inputs, 32 KB Flash, 2 KB SRAM, 16 MHz clock. Best for beginners.</p>
+        <span class="card-tag" data-en="Beginner" data-ar="مبتدئ">Beginner</span>
+      </div>
+      <div class="learn-card">
+        <div class="card-icon">◇</div>
+        <h3 data-en="Arduino Mega" data-ar="أردوينو ميغا">Arduino Mega</h3>
+        <p data-en="Expanded version with 54 digital I/O pins, 16 analog inputs, 256 KB Flash. Ideal for projects requiring many sensors or actuators simultaneously." data-ar="نسخة موسّعة بـ٥٤ طرف رقمي، ١٦ مدخل تماثلي، ٢٥٦ كيلوبايت فلاش. مثالية للمشاريع التي تتطلب مستشعرات ومشغّلات متعددة.">Expanded version with 54 digital I/O pins, 16 analog inputs, 256 KB Flash. Ideal for projects requiring many sensors or actuators simultaneously.</p>
+        <span class="card-tag" data-en="Intermediate" data-ar="متوسط">Intermediate</span>
+      </div>
+      <div class="learn-card">
+        <div class="card-icon">◉</div>
+        <h3 data-en="Arduino Nano" data-ar="أردوينو نانو">Arduino Nano</h3>
+        <p data-en="Compact form factor — same ATmega328P as the Uno but in a breadboard-friendly DIP package. Perfect for space-constrained projects." data-ar="شكل مدمج — نفس ATmega328P في حزمة DIP مناسبة للبروتوبورد. مثالية للمشاريع ذات المساحة المحدودة.">Compact form factor — same ATmega328P as the Uno but in a breadboard-friendly DIP package. Perfect for space-constrained projects.</p>
+        <span class="card-tag" data-en="Compact" data-ar="مدمج">Compact</span>
+      </div>
+    </div>
+
+    <!-- Arduino Code Example -->
+    <div class="two-col-3-2 two-col fade-up">
+      <div>
+        <span class="section-tag" data-en="Your First Sketch" data-ar="أول كود لك">Your First Sketch</span>
+        <h3 style="margin-bottom:1rem;" data-en="Blink — LED on Pin 13" data-ar="وميض — مصباح على الطرف ١٣">Blink — LED on Pin 13</h3>
+        <p style="color:var(--text-muted);font-size:0.875rem;margin-bottom:1.5rem;" data-en="Every Arduino program has two main functions: setup() runs once at startup, loop() runs repeatedly forever. This sketch blinks the built-in LED." data-ar="كل برنامج أردوينو له دالتان رئيسيتان: setup() تعمل مرة واحدة عند التشغيل، loop() تعمل للأبد. هذا الكود يُومض المصباح المدمج.">Every Arduino program has two main functions: setup() runs once at startup, loop() runs repeatedly forever. This sketch blinks the built-in LED.</p>
+        <div class="code-block">
+          <span class="code-label">Arduino C++</span>
+<span class="c-comment">// Blink Sketch — Classic first program</span>
+<span class="c-keyword">const int</span> LED_PIN = <span class="c-number">13</span>;
+
+<span class="c-keyword">void</span> <span class="c-function">setup</span>() {
+  <span class="c-comment">// Set pin 13 as OUTPUT</span>
+  <span class="c-function">pinMode</span>(LED_PIN, <span class="c-keyword">OUTPUT</span>);
+}
+
+<span class="c-keyword">void</span> <span class="c-function">loop</span>() {
+  <span class="c-function">digitalWrite</span>(LED_PIN, <span class="c-keyword">HIGH</span>); <span class="c-comment">// ON</span>
+  <span class="c-function">delay</span>(<span class="c-number">1000</span>);                   <span class="c-comment">// Wait 1 second</span>
+  <span class="c-function">digitalWrite</span>(LED_PIN, <span class="c-keyword">LOW</span>);  <span class="c-comment">// OFF</span>
+  <span class="c-function">delay</span>(<span class="c-number">1000</span>);                   <span class="c-comment">// Wait 1 second</span>
+}
+        </div>
+      </div>
+      <div>
+        <span class="section-tag" data-en="Key Functions" data-ar="الدوال الأساسية">Key Functions</span>
+        <h3 style="margin-bottom:1.25rem;" data-en="Arduino API Quick Ref" data-ar="مرجع سريع لـ API">Arduino API Quick Ref</h3>
+        <table class="compare-table">
+          <thead><tr>
+            <th data-en="Function" data-ar="الدالة">Function</th>
+            <th data-en="Purpose" data-ar="الغرض">Purpose</th>
+          </tr></thead>
+          <tbody>
+            <tr><td class="td-label td-highlight">pinMode()</td><td data-en="Set pin mode (INPUT/OUTPUT)" data-ar="تحديد وضع الطرف">Set pin mode</td></tr>
+            <tr><td class="td-label td-highlight">digitalWrite()</td><td data-en="Write HIGH or LOW to digital pin" data-ar="كتابة HIGH أو LOW">Write digital HIGH/LOW</td></tr>
+            <tr><td class="td-label td-highlight">digitalRead()</td><td data-en="Read state of a digital pin" data-ar="قراءة حالة طرف رقمي">Read digital pin</td></tr>
+            <tr><td class="td-label td-highlight">analogRead()</td><td data-en="Read 0–1023 from analog pin" data-ar="قراءة 0–1023 من طرف تماثلي">Read analog 0–1023</td></tr>
+            <tr><td class="td-label td-highlight">analogWrite()</td><td data-en="Write PWM value 0–255" data-ar="كتابة قيمة PWM 0–255">Write PWM 0–255</td></tr>
+            <tr><td class="td-label td-highlight">delay()</td><td data-en="Pause for N milliseconds" data-ar="إيقاف مؤقت لـ N ملي ثانية">Pause N milliseconds</td></tr>
+            <tr><td class="td-label td-highlight">Serial.begin()</td><td data-en="Initialize serial communication" data-ar="تهيئة الاتصال التسلسلي">Init serial comms</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     MODULE 03 — WEMOS D1 R32
+═══════════════════════════════════════ -->
+<section class="learn-section section" id="wemos">
+  <div class="container">
+    <div class="slide-header fade-up">
+      <span class="slide-num">03</span>
+      <span class="section-tag" data-en="WiFi Board" data-ar="لوحة واي-فاي">WiFi Board</span>
+      <h2 data-en="WEMOS D1 R32 — <span class='italic gold'>ESP32 in Arduino Form</span>" data-ar="ويموس D1 R32 — <span class='italic gold'>ESP32 بشكل أردوينو</span>">WEMOS D1 R32 — <span class="italic gold">ESP32 in Arduino Form</span></h2>
+      <div class="divider"></div>
+      <p style="color:var(--text-muted);max-width:620px;margin-top:1rem;" data-en="The WEMOS D1 R32 takes the powerful ESP32 chip and packages it in the familiar Arduino Uno form factor. This gives you Wi-Fi, Bluetooth, dual cores, and 240 MHz speed — while keeping the same pin layout you already know." data-ar="يأخذ ويموس D1 R32 شريحة ESP32 القوية ويضعها في شكل أردوينو أونو المألوف. هذا يمنحك واي-فاي وبلوتوث ونواتين مزدوجتين وسرعة ٢٤٠ ميغاهرتز — مع الحفاظ على نفس تخطيط الأطراف الذي تعرفه.">The WEMOS D1 R32 takes the powerful ESP32 chip and packages it in the familiar Arduino Uno form factor. This gives you Wi-Fi, Bluetooth, dual cores, and 240 MHz speed — while keeping the same pin layout you already know.</p>
+    </div>
+
+    <div class="two-col fade-up">
+      <div>
+        <!-- Specs Card -->
+        <div class="spec-card" style="margin-bottom:2rem;">
+          <div class="spec-card-head">
+            <h3>WEMOS D1 R32</h3>
+            <span class="spec-badge wifi" data-en="WiFi + BT" data-ar="واي-فاي + بلوتوث">WiFi + BT</span>
+          </div>
+          <div class="spec-rows">
+            <div class="spec-row"><span class="spec-key" data-en="Chip" data-ar="الشريحة">Chip</span><span class="spec-val gold">ESP32-D0WDQ6</span></div>
+            <div class="spec-row"><span class="spec-key" data-en="CPU Cores" data-ar="النوى">CPU Cores</span><span class="spec-val" data-en="Dual-core Xtensa LX6" data-ar="نواتان Xtensa LX6">Dual-core Xtensa LX6</span></div>
+            <div class="spec-row"><span class="spec-key" data-en="Clock Speed" data-ar="سرعة الساعة">Clock Speed</span><span class="spec-val gold">240 MHz</span></div>
+            <div class="spec-row"><span class="spec-key">Flash</span><span class="spec-val">4 MB</span></div>
+            <div class="spec-row"><span class="spec-key">RAM (SRAM)</span><span class="spec-val">520 KB</span></div>
+            <div class="spec-row"><span class="spec-key" data-en="Digital I/O Pins" data-ar="أطراف رقمية">Digital I/O Pins</span><span class="spec-val">34</span></div>
+            <div class="spec-row"><span class="spec-key" data-en="Analog Input Pins" data-ar="مدخلات تماثلية">Analog Input</span><span class="spec-val">18 (12-bit ADC)</span></div>
+            <div class="spec-row"><span class="spec-key">Wi-Fi</span><span class="spec-val gold" data-en="802.11 b/g/n 2.4 GHz" data-ar="802.11 b/g/n 2.4 جيجاهرتز">802.11 b/g/n 2.4 GHz</span></div>
+            <div class="spec-row"><span class="spec-key">Bluetooth</span><span class="spec-val" data-en="BT 4.2 + BLE" data-ar="بلوتوث 4.2 + BLE">BT 4.2 + BLE</span></div>
+            <div class="spec-row"><span class="spec-key" data-en="Operating Voltage" data-ar="جهد التشغيل">Operating Voltage</span><span class="spec-val">3.3 V</span></div>
+            <div class="spec-row"><span class="spec-key" data-en="Form Factor" data-ar="شكل اللوحة">Form Factor</span><span class="spec-val gold" data-en="Arduino Uno compatible" data-ar="متوافق مع أردوينو أونو">Arduino Uno compatible</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <span class="section-tag" data-en="Why WEMOS D1 R32?" data-ar="لماذا ويموس D1 R32؟">Why WEMOS D1 R32?</span>
+        <h3 style="margin-bottom:1.25rem;" data-en="Arduino Uno vs WEMOS D1 R32" data-ar="أردوينو أونو مقابل ويموس D1 R32">Arduino Uno vs WEMOS D1 R32</h3>
+        <table class="compare-table">
+          <thead><tr>
+            <th data-en="Feature" data-ar="الميزة">Feature</th>
+            <th>Uno</th>
+            <th>D1 R32</th>
+          </tr></thead>
+          <tbody>
+            <tr><td class="td-label" data-en="Clock" data-ar="الساعة">Clock</td><td>16 MHz</td><td class="td-highlight">240 MHz</td></tr>
+            <tr><td class="td-label" data-en="CPU Cores" data-ar="النوى">CPU Cores</td><td>1</td><td class="td-highlight">2</td></tr>
+            <tr><td class="td-label">Flash</td><td>32 KB</td><td class="td-highlight">4 MB</td></tr>
+            <tr><td class="td-label">SRAM</td><td>2 KB</td><td class="td-highlight">520 KB</td></tr>
+            <tr><td class="td-label">Wi-Fi</td><td class="td-crimson" data-en="No" data-ar="لا">No</td><td class="td-highlight" data-en="Yes ✓" data-ar="نعم ✓">Yes ✓</td></tr>
+            <tr><td class="td-label">Bluetooth</td><td class="td-crimson" data-en="No" data-ar="لا">No</td><td class="td-highlight" data-en="Yes ✓" data-ar="نعم ✓">Yes ✓</td></tr>
+            <tr><td class="td-label" data-en="Form Factor" data-ar="الشكل">Form Factor</td><td data-en="Uno" data-ar="أونو">Uno</td><td class="td-highlight" data-en="Uno Compatible" data-ar="متوافق مع أونو">Uno Compatible</td></tr>
+            <tr><td class="td-label" data-en="ADC Resolution" data-ar="دقة ADC">ADC</td><td>10-bit</td><td class="td-highlight">12-bit</td></tr>
+          </tbody>
+        </table>
+        <p style="margin-top:1rem;font-size:0.82rem;color:var(--text-dim);" data-en="* Use board package: esp32 by Espressif in Arduino IDE 2.x" data-ar="* استخدم حزمة اللوحة: esp32 من Espressif في Arduino IDE 2.x">* Use board package: esp32 by Espressif in Arduino IDE 2.x</p>
+      </div>
+    </div>
+
+    <!-- WEMOS WiFi Code Example -->
+    <div class="fade-up" style="margin-top:3rem;">
+      <span class="section-tag" data-en="WiFi Example" data-ar="مثال واي-فاي">WiFi Example</span>
+      <h3 style="margin-bottom:1rem;" data-en="Connect to WiFi Network" data-ar="الاتصال بشبكة واي-فاي">Connect to WiFi Network</h3>
+      <div class="code-block">
+        <span class="code-label">Arduino C++ — ESP32 WiFi</span>
+<span class="c-keyword">#include</span> <span class="c-string">&lt;WiFi.h&gt;</span>
+
+<span class="c-keyword">const char*</span> ssid     = <span class="c-string">"YourNetworkName"</span>;
+<span class="c-keyword">const char*</span> password = <span class="c-string">"YourPassword"</span>;
+
+<span class="c-keyword">void</span> <span class="c-function">setup</span>() {
+  Serial.<span class="c-function">begin</span>(<span class="c-number">115200</span>);
+  WiFi.<span class="c-function">begin</span>(ssid, password);
+
+  <span class="c-keyword">while</span> (WiFi.<span class="c-function">status</span>() != WL_CONNECTED) {
+    <span class="c-function">delay</span>(<span class="c-number">500</span>);
+    Serial.<span class="c-function">print</span>(<span class="c-string">"."</span>);
+  }
+  Serial.<span class="c-function">println</span>(<span class="c-string">"\nConnected! IP: "</span>);
+  Serial.<span class="c-function">println</span>(WiFi.<span class="c-function">localIP</span>());
+}
+
+<span class="c-keyword">void</span> <span class="c-function">loop</span>() {
+  <span class="c-comment">// Your IoT logic here</span>
+}
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     MODULE 04 — MCU Comparison
+═══════════════════════════════════════ -->
+<section class="learn-section section" id="controllers">
+  <div class="container">
+    <div class="slide-header fade-up">
+      <span class="slide-num">04</span>
+      <span class="section-tag" data-en="Comparison" data-ar="المقارنة">Comparison</span>
+      <h2 data-en="Popular <span class='italic gold'>Microcontrollers</span>" data-ar="المتحكمات <span class='italic gold'>الشائعة</span>">Popular <span class="italic gold">Microcontrollers</span></h2>
+      <div class="divider"></div>
+      <p style="color:var(--text-muted);max-width:580px;margin-top:1rem;" data-en="Beyond Arduino and WEMOS, the embedded world has many options. Here's a structured overview of the most commonly used microcontrollers in education and prototyping." data-ar="ما وراء أردوينو وويموس، عالم المتحكمات المدمجة غني بالخيارات. إليك نظرة منظّمة على أكثر المتحكمات استخداماً في التعليم والنماذج الأولية.">Beyond Arduino and WEMOS, the embedded world has many options. Here's a structured overview of the most commonly used microcontrollers in education and prototyping.</p>
+    </div>
+
+    <div class="card-grid card-grid-2 fade-up" style="margin-bottom:2rem;">
+      <!-- ATmega328P -->
+      <div class="spec-card">
+        <div class="spec-card-head">
+          <h3>ATmega328P</h3>
+          <span class="spec-badge popular" data-en="Most Popular" data-ar="الأكثر شعبية">Most Popular</span>
+        </div>
+        <div class="spec-rows">
+          <div class="spec-row"><span class="spec-key" data-en="Used In" data-ar="يُستخدم في">Used In</span><span class="spec-val">Arduino Uno, Nano</span></div>
+          <div class="spec-row"><span class="spec-key">CPU</span><span class="spec-val">8-bit AVR @ 16 MHz</span></div>
+          <div class="spec-row"><span class="spec-key">Flash</span><span class="spec-val">32 KB</span></div>
+          <div class="spec-row"><span class="spec-key">SRAM</span><span class="spec-val">2 KB</span></div>
+          <div class="spec-row"><span class="spec-key">I/O Pins</span><span class="spec-val">23</span></div>
+          <div class="spec-row"><span class="spec-key" data-en="Best For" data-ar="الأفضل لـ">Best For</span><span class="spec-val gold" data-en="Learning, simple projects" data-ar="التعلم، المشاريع البسيطة">Learning, simple projects</span></div>
+        </div>
+      </div>
+      <!-- ESP32 -->
+      <div class="spec-card">
+        <div class="spec-card-head">
+          <h3>ESP32</h3>
+          <span class="spec-badge wifi" data-en="WiFi + BLE" data-ar="واي-فاي + BLE">WiFi + BLE</span>
+        </div>
+        <div class="spec-rows">
+          <div class="spec-row"><span class="spec-key" data-en="Used In" data-ar="يُستخدم في">Used In</span><span class="spec-val">WEMOS D1 R32, ESP32 DevKit</span></div>
+          <div class="spec-row"><span class="spec-key">CPU</span><span class="spec-val">Dual-core 32-bit @ 240 MHz</span></div>
+          <div class="spec-row"><span class="spec-key">Flash</span><span class="spec-val">4 MB (external)</span></div>
+          <div class="spec-row"><span class="spec-key">SRAM</span><span class="spec-val">520 KB</span></div>
+          <div class="spec-row"><span class="spec-key">I/O Pins</span><span class="spec-val">34</span></div>
+          <div class="spec-row"><span class="spec-key" data-en="Best For" data-ar="الأفضل لـ">Best For</span><span class="spec-val gold" data-en="IoT, connectivity, performance" data-ar="إنترنت الأشياء، الاتصال، الأداء">IoT, connectivity, performance</span></div>
+        </div>
+      </div>
+      <!-- ATmega2560 -->
+      <div class="spec-card">
+        <div class="spec-card-head">
+          <h3>ATmega2560</h3>
+          <span class="spec-badge" data-en="High I/O" data-ar="أطراف عالية">High I/O</span>
+        </div>
+        <div class="spec-rows">
+          <div class="spec-row"><span class="spec-key" data-en="Used In" data-ar="يُستخدم في">Used In</span><span class="spec-val">Arduino Mega 2560</span></div>
+          <div class="spec-row"><span class="spec-key">CPU</span><span class="spec-val">8-bit AVR @ 16 MHz</span></div>
+          <div class="spec-row"><span class="spec-key">Flash</span><span class="spec-val">256 KB</span></div>
+          <div class="spec-row"><span class="spec-key">SRAM</span><span class="spec-val">8 KB</span></div>
+          <div class="spec-row"><span class="spec-key">I/O Pins</span><span class="spec-val">54 digital / 16 analog</span></div>
+          <div class="spec-row"><span class="spec-key" data-en="Best For" data-ar="الأفضل لـ">Best For</span><span class="spec-val gold" data-en="Robotics, many sensors" data-ar="الروبوتيكس، مستشعرات متعددة">Robotics, many sensors</span></div>
+        </div>
+      </div>
+      <!-- RP2040 -->
+      <div class="spec-card">
+        <div class="spec-card-head">
+          <h3>RP2040</h3>
+          <span class="spec-badge advanced" data-en="Modern" data-ar="حديث">Modern</span>
+        </div>
+        <div class="spec-rows">
+          <div class="spec-row"><span class="spec-key" data-en="Used In" data-ar="يُستخدم في">Used In</span><span class="spec-val">Raspberry Pi Pico</span></div>
+          <div class="spec-row"><span class="spec-key">CPU</span><span class="spec-val">Dual-core ARM Cortex-M0+ @ 133 MHz</span></div>
+          <div class="spec-row"><span class="spec-key">Flash</span><span class="spec-val">2 MB (external)</span></div>
+          <div class="spec-row"><span class="spec-key">SRAM</span><span class="spec-val">264 KB</span></div>
+          <div class="spec-row"><span class="spec-key">I/O Pins</span><span class="spec-val">26</span></div>
+          <div class="spec-row"><span class="spec-key" data-en="Best For" data-ar="الأفضل لـ">Best For</span><span class="spec-val gold" data-en="MicroPython, audio, USB" data-ar="MicroPython، الصوت، USB">MicroPython, audio, USB</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Full Comparison Table -->
+    <div class="fade-up" style="margin-top:3rem;">
+      <span class="section-tag" data-en="Side-by-Side" data-ar="مقارنة جنباً إلى جنب">Side-by-Side</span>
+      <h3 style="margin-bottom:1.5rem;" data-en="Full Specification Comparison" data-ar="مقارنة المواصفات الكاملة">Full Specification Comparison</h3>
+      <div style="overflow-x:auto;">
+        <table class="compare-table" style="min-width:700px;">
+          <thead><tr>
+            <th data-en="Spec" data-ar="المواصفة">Spec</th>
+            <th>ATmega328P</th>
+            <th>ATmega2560</th>
+            <th>ESP32</th>
+            <th>RP2040</th>
+          </tr></thead>
+          <tbody>
+            <tr><td class="td-label" data-en="Architecture" data-ar="المعمارية">Architecture</td><td>8-bit AVR</td><td>8-bit AVR</td><td class="td-highlight">32-bit Xtensa</td><td class="td-highlight">32-bit ARM</td></tr>
+            <tr><td class="td-label" data-en="Cores" data-ar="النوى">Cores</td><td>1</td><td>1</td><td class="td-highlight">2</td><td class="td-highlight">2</td></tr>
+            <tr><td class="td-label" data-en="Max Clock" data-ar="أقصى سرعة">Max Clock</td><td>20 MHz</td><td>20 MHz</td><td class="td-highlight">240 MHz</td><td>133 MHz</td></tr>
+            <tr><td class="td-label">Flash</td><td>32 KB</td><td>256 KB</td><td class="td-highlight">4 MB</td><td>2 MB</td></tr>
+            <tr><td class="td-label">SRAM</td><td>2 KB</td><td>8 KB</td><td class="td-highlight">520 KB</td><td>264 KB</td></tr>
+            <tr><td class="td-label">Wi-Fi</td><td class="td-crimson">✗</td><td class="td-crimson">✗</td><td class="td-highlight">✓</td><td class="td-crimson">✗</td></tr>
+            <tr><td class="td-label">Bluetooth</td><td class="td-crimson">✗</td><td class="td-crimson">✗</td><td class="td-highlight">✓</td><td class="td-crimson">✗</td></tr>
+            <tr><td class="td-label" data-en="Operating Voltage" data-ar="جهد التشغيل">Voltage</td><td>5 V / 3.3 V</td><td>5 V / 3.3 V</td><td>3.3 V</td><td>3.3 V</td></tr>
+            <tr><td class="td-label" data-en="IDE Support" data-ar="دعم بيئة التطوير">IDE Support</td><td class="td-highlight">Arduino</td><td class="td-highlight">Arduino</td><td class="td-highlight">Arduino / PlatformIO</td><td>Arduino / MicroPython</td></tr>
+            <tr><td class="td-label" data-en="Price Range" data-ar="النطاق السعري">Price</td><td>~$3–5</td><td>~$10–15</td><td>~$5–8</td><td>~$4–6</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     MODULE 05 — Get Started
+═══════════════════════════════════════ -->
+<section class="learn-section section" id="getstarted">
+  <div class="container">
+    <div class="slide-header fade-up">
+      <span class="slide-num">05</span>
+      <span class="section-tag" data-en="Hands On" data-ar="التطبيق العملي">Hands On</span>
+      <h2 data-en="Getting <span class='italic gold'>Started</span>" data-ar="كيف <span class='italic gold'>تبدأ</span>">Getting <span class="italic gold">Started</span></h2>
+      <div class="divider"></div>
+    </div>
+
+    <div class="two-col fade-up" style="margin-bottom:4rem;">
+      <div>
+        <span class="section-tag" data-en="Setup Steps" data-ar="خطوات الإعداد">Setup Steps</span>
+        <h3 style="margin-bottom:1.25rem;" data-en="Arduino IDE Setup" data-ar="إعداد بيئة أردوينو">Arduino IDE Setup</h3>
+        <ul class="step-list">
+          <li><div class="step-content">
+            <h4 data-en="Download Arduino IDE 2.x" data-ar="تحميل Arduino IDE 2.x">Download Arduino IDE 2.x</h4>
+            <p data-en="Visit arduino.cc and download the latest IDE for your OS (Windows / macOS / Linux)." data-ar="زُر arduino.cc وحمّل أحدث بيئة تطوير لنظام تشغيلك.">Visit arduino.cc and download the latest IDE for your OS.</p>
+          </div></li>
+          <li><div class="step-content">
+            <h4 data-en="Install Board Packages" data-ar="تثبيت حزم اللوحات">Install Board Packages</h4>
+            <p data-en="For WEMOS/ESP32: Tools → Board Manager → Search 'esp32' → Install by Espressif." data-ar="لـ WEMOS/ESP32: Tools → Board Manager → ابحث عن 'esp32' → ثبّت من Espressif.">For WEMOS/ESP32: Tools → Board Manager → Search 'esp32' → Install by Espressif.</p>
+          </div></li>
+          <li><div class="step-content">
+            <h4 data-en="Connect Your Board" data-ar="توصيل لوحتك">Connect Your Board</h4>
+            <p data-en="Use a USB cable (USB-A to USB-Micro or USB-C). Your OS should detect a COM/tty port automatically." data-ar="استخدم كابل USB. يجب أن يكتشف نظام التشغيل منفذ COM/tty تلقائياً.">Use a USB cable. Your OS should detect a COM/tty port automatically.</p>
+          </div></li>
+          <li><div class="step-content">
+            <h4 data-en="Select Board and Port" data-ar="اختر اللوحة والمنفذ">Select Board and Port</h4>
+            <p data-en="Tools → Board → Select your board. Tools → Port → Select the COM port showing your device." data-ar="Tools → Board → اختر لوحتك. Tools → Port → اختر منفذ COM للجهاز.">Tools → Board → Select your board. Tools → Port → Select the COM port.</p>
+          </div></li>
+          <li><div class="step-content">
+            <h4 data-en="Upload & Test" data-ar="رفع الكود واختباره">Upload &amp; Test</h4>
+            <p data-en="Click the Upload arrow (→). The IDE compiles and flashes your code. Open Serial Monitor (Ctrl+Shift+M) to see output." data-ar="اضغط سهم الرفع. يقوم الـ IDE بالترجمة وتحميل الكود. افتح مراقب السيريال (Ctrl+Shift+M) للمشاهدة.">Click the Upload arrow. Open Serial Monitor (Ctrl+Shift+M) to see output.</p>
+          </div></li>
+        </ul>
+      </div>
+
+      <div>
+        <span class="section-tag" data-en="Recommended Components" data-ar="المكونات الموصى بها">Recommended Components</span>
+        <h3 style="margin-bottom:1.25rem;" data-en="Starter Kit Checklist" data-ar="قائمة مكونات كيت البداية">Starter Kit Checklist</h3>
+        <div class="card-grid" style="grid-template-columns:1fr 1fr;gap:1px;background:var(--border-dim);">
+          <div class="learn-card" style="padding:1.25rem;">
+            <div style="font-size:1.2rem;margin-bottom:0.5rem;">⬡</div>
+            <h4 style="font-size:0.82rem;text-transform:none;letter-spacing:0;" data-en="Arduino Uno / WEMOS D1" data-ar="أردوينو أونو / ويموس D1">Arduino Uno / WEMOS D1</h4>
+          </div>
+          <div class="learn-card" style="padding:1.25rem;">
+            <div style="font-size:1.2rem;margin-bottom:0.5rem;">▭</div>
+            <h4 style="font-size:0.82rem;text-transform:none;letter-spacing:0;" data-en="Breadboard 830pt" data-ar="بروتوبورد ٨٣٠ نقطة">Breadboard 830pt</h4>
+          </div>
+          <div class="learn-card" style="padding:1.25rem;">
+            <div style="font-size:1.2rem;margin-bottom:0.5rem;">≈</div>
+            <h4 style="font-size:0.82rem;text-transform:none;letter-spacing:0;" data-en="Jumper Wires (M/M, M/F)" data-ar="أسلاك توصيل">Jumper Wires (M/M, M/F)</h4>
+          </div>
+          <div class="learn-card" style="padding:1.25rem;">
+            <div style="font-size:1.2rem;margin-bottom:0.5rem;">◎</div>
+            <h4 style="font-size:0.82rem;text-transform:none;letter-spacing:0;" data-en="LEDs (assorted)" data-ar="مصابيح LED متنوعة">LEDs (assorted)</h4>
+          </div>
+          <div class="learn-card" style="padding:1.25rem;">
+            <div style="font-size:1.2rem;margin-bottom:0.5rem;">⊡</div>
+            <h4 style="font-size:0.82rem;text-transform:none;letter-spacing:0;" data-en="Resistors Kit" data-ar="مقاومات متنوعة">Resistors Kit</h4>
+          </div>
+          <div class="learn-card" style="padding:1.25rem;">
+            <div style="font-size:1.2rem;margin-bottom:0.5rem;">◈</div>
+            <h4 style="font-size:0.82rem;text-transform:none;letter-spacing:0;" data-en="DHT11 / DHT22 Sensor" data-ar="مستشعر DHT11 / DHT22">DHT11 / DHT22 Sensor</h4>
+          </div>
+          <div class="learn-card" style="padding:1.25rem;">
+            <div style="font-size:1.2rem;margin-bottom:0.5rem;">▤</div>
+            <h4 style="font-size:0.82rem;text-transform:none;letter-spacing:0;" data-en="I2C LCD 16×2" data-ar="شاشة I2C LCD 16×2">I2C LCD 16×2</h4>
+          </div>
+          <div class="learn-card" style="padding:1.25rem;">
+            <div style="font-size:1.2rem;margin-bottom:0.5rem;">⊙</div>
+            <h4 style="font-size:0.82rem;text-transform:none;letter-spacing:0;" data-en="USB Cable + Power Supply" data-ar="كابل USB + مزود طاقة">USB Cable + Power Supply</h4>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quiz CTA -->
+    <div class="quiz-cta fade-up">
+      <span class="section-tag" data-en="Test Your Knowledge" data-ar="اختبر معلوماتك">Test Your Knowledge</span>
+      <h3 data-en="Ready to Build Your First Project?" data-ar="هل أنت مستعد لبناء مشروعك الأول؟">Ready to Build Your First Project?</h3>
+      <p data-en="Start with the Blink sketch, then try reading a button, then connect a sensor. Each small step builds your embedded intuition." data-ar="ابدأ بكود الوميض، ثم اقرأ حالة زر، ثم وصّل مستشعراً. كل خطوة صغيرة تبني حدسك في الأنظمة المدمجة.">Start with the Blink sketch, then try reading a button, then connect a sensor. Each small step builds your embedded intuition.</p>
+      <a href="contact.html" class="btn btn-gold" data-en="Talk to an Expert" data-ar="تحدث مع خبير">Talk to an Expert</a>
+      &nbsp;&nbsp;
+      <a href="#intro" class="btn btn-outline" data-en="Review from Start" data-ar="راجع من البداية">Review from Start</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="index.html" class="nav-logo"><span class="logo-e">E</span><span class="logo-s">S</span><span class="logo-t">T</span><span class="logo-l">L</span></a>
+        <p data-en="A creative agency specializing in visual identity and exceptional web experiences." data-ar="وكالة إبداعية متخصصة في بناء الهويات البصرية وتجارب الويب الاستثنائية.">A creative agency specializing in visual identity and exceptional web experiences.</p>
+      </div>
+      <div class="footer-col">
+        <h4 data-en="Company" data-ar="الشركة">Company</h4>
+        <ul>
+          <li><a href="about.html" data-en="About Us" data-ar="من نحن">About Us</a></li>
+          <li><a href="portfolio.html" data-en="Our Work" data-ar="أعمالنا">Our Work</a></li>
+          <li><a href="contact.html" data-en="Contact Us" data-ar="تواصل معنا">Contact Us</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4 data-en="Services" data-ar="خدماتنا">Services</h4>
+        <ul>
+          <li><a href="services.html" data-en="Visual Identity" data-ar="الهوية البصرية">Visual Identity</a></li>
+          <li><a href="services.html" data-en="Web Development" data-ar="تطوير الويب">Web Development</a></li>
+          <li><a href="services.html" data-en="Digital Marketing" data-ar="التسويق الرقمي">Digital Marketing</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4 data-en="Follow Us" data-ar="تابعنا">Follow Us</h4>
+        <ul>
+          <li><a href="#">Instagram</a></li>
+          <li><a href="#">Behance</a></li>
+          <li><a href="#">LinkedIn</a></li>
+        </ul>
+      </div>
+      <div class="footer-learn">
+        <span class="learn-badge" data-en="New" data-ar="جديد">New</span>
+        <h4 data-en="Learn With Me" data-ar="تعلّم معي">Learn With Me</h4>
+        <ul>
+          <li><a href="learn-arduino.html#intro"><span class="learn-dot"></span><span data-en="Arduino Basics" data-ar="أساسيات أردوينو">Arduino Basics</span></a></li>
+          <li><a href="learn-arduino.html#wemos"><span class="learn-dot"></span><span data-en="WEMOS D1 R32" data-ar="ويموس D1 R32">WEMOS D1 R32</span></a></li>
+          <li><a href="learn-arduino.html#controllers"><span class="learn-dot"></span><span data-en="Microcontrollers" data-ar="المتحكمات الدقيقة">Microcontrollers</span></a></li>
+          <li><a href="learn-arduino.html#getstarted"><span class="learn-dot"></span><span data-en="Get Started" data-ar="ابدأ الآن">Get Started</span></a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span data-en="© 2025 ESTL. All rights reserved." data-ar="© 2025 ESTL. جميع الحقوق محفوظة.">© 2025 ESTL. All rights reserved.</span>
+      <span data-en="Made with passion ✦" data-ar="صُنع بشغف ✦">Made with passion ✦</span>
+    </div>
+  </div>
+</footer>
+
+<script src="lang.js"></script>
+<script>
+  // Hamburger
+  const burger = document.getElementById('burger');
+  const navLinks = document.getElementById('navLinks');
+  burger.addEventListener('click', () => { burger.classList.toggle('open'); navLinks.classList.toggle('open'); });
+
+  // Fade observer
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+  // TOC active state on scroll
+  const sections = document.querySelectorAll('section[id]');
+  const tocLinks = document.querySelectorAll('.toc-link');
+  const tocObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if(e.isIntersecting) {
+        tocLinks.forEach(l => l.classList.remove('active'));
+        const link = document.querySelector('.toc-link[href="#' + e.target.id + '"]');
+        if(link) link.classList.add('active');
+      }
+    });
+  }, { threshold: 0.3 });
+  sections.forEach(s => tocObserver.observe(s));
+</script>
+</body>
+</html>

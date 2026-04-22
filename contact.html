@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ESTL — Contact</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .page-hero { padding: 12rem 0 4rem; position: relative; overflow: hidden; }
+    .page-hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 70% at 30% 50%, rgba(188,174,29,0.07) 0%, transparent 70%); }
+    .page-hero-inner { position: relative; }
+
+    .contact-layout { display: grid; grid-template-columns: 1fr 1.5fr; gap: 6rem; align-items: start; }
+
+    .contact-info-item { margin-bottom: 2.5rem; }
+    .ci-label { font-size: 0.65rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.5rem; }
+    .ci-value { font-family: var(--font-display); font-size: 1.2rem; }
+    html[lang="ar"] .ci-value { font-family: var(--font-arabic); }
+    .ci-value a { color: var(--text); text-decoration: none; transition: color 0.2s; }
+    .ci-value a:hover { color: var(--gold); }
+
+    .social-links { display: flex; gap: 0.75rem; margin-top: 2rem; }
+    .social-link { width: 2.5rem; height: 2.5rem; border: 1px solid var(--border-dim); display: flex; align-items: center; justify-content: center; text-decoration: none; color: var(--text-muted); font-size: 0.75rem; transition: all 0.2s; }
+    .social-link:hover { border-color: var(--gold); color: var(--gold); }
+
+    .contact-form { padding: 3rem; background: var(--bg2); border: 1px solid var(--border-dim); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    .form-group { margin-bottom: 1.5rem; }
+    .form-group label { display: block; font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.6rem; }
+    .form-group input,
+    .form-group textarea,
+    .form-group select { width: 100%; background: var(--bg); border: 1px solid var(--border-dim); color: var(--text); padding: 0.85rem 1rem; font-family: var(--font-body); font-size: 0.9rem; font-weight: 300; transition: border-color 0.2s; appearance: none; }
+    html[lang="ar"] .form-group input,
+    html[lang="ar"] .form-group textarea,
+    html[lang="ar"] .form-group select { font-family: var(--font-arabic); text-align: right; }
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus { outline: none; border-color: var(--gold); }
+    .form-group textarea { resize: vertical; min-height: 120px; }
+    .form-group input::placeholder,
+    .form-group textarea::placeholder { color: var(--text-dim); }
+
+    .budget-options { display: grid; grid-template-columns: repeat(3,1fr); gap: 0.5rem; }
+    .budget-opt { border: 1px solid var(--border-dim); padding: 0.6rem; text-align: center; font-size: 0.75rem; cursor: pointer; transition: all 0.2s; color: var(--text-muted); }
+    .budget-opt:hover, .budget-opt.selected { border-color: var(--gold); color: var(--gold); background: var(--gold-dim); }
+
+    .submit-btn { width: 100%; padding: 1rem; background: var(--gold); color: var(--bg); border: none; font-family: var(--font-body); font-size: 0.8rem; letter-spacing: 0.2em; text-transform: uppercase; cursor: pointer; transition: background 0.2s; display: flex; align-items: center; justify-content: center; gap: 1rem; }
+    html[lang="ar"] .submit-btn { font-family: var(--font-arabic); }
+    .submit-btn:hover { background: var(--gold-light); }
+
+    .form-success { text-align: center; padding: 4rem 2rem; display: none; }
+    .success-icon { font-size: 3rem; color: var(--gold); margin-bottom: 1.5rem; }
+    .form-success h3 { margin-bottom: 1rem; }
+    .form-success p { color: var(--text-muted); }
+
+    .map-section { background: var(--bg2); padding: 5rem 0; border-top: 1px solid var(--border-dim); }
+    .map-box { width: 100%; height: 300px; background: var(--bg3); display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+    .map-box::before { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(188,174,29,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(188,174,29,0.04) 1px, transparent 1px); background-size: 40px 40px; }
+    .map-pin { position: relative; z-index: 1; text-align: center; }
+    .map-pin-dot { width: 1rem; height: 1rem; border: 2px solid var(--gold); border-radius: 50%; margin: 0 auto 0.75rem; position: relative; }
+    .map-pin-dot::after { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 200px; height: 200px; border-radius: 50%; border: 1px solid rgba(188,174,29,0.1); animation: ping 3s ease-in-out infinite; }
+    @keyframes ping { 0%,100%{transform:translate(-50%,-50%) scale(0.5);opacity:0} 50%{transform:translate(-50%,-50%) scale(1);opacity:1} }
+    .map-label { font-size: 0.8rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold); }
+
+    @media(max-width:900px) {
+      .contact-layout { grid-template-columns: 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+      .budget-options { grid-template-columns: repeat(2,1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo"><span class="logo-e">E</span><span class="logo-s">S</span><span class="logo-t">T</span><span class="logo-l">L</span></a>
+  <button class="hamburger" id="burger"><span></span><span></span><span></span></button>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="index.html" data-en="Home" data-ar="الرئيسية">Home</a></li>
+    <li><a href="about.html" data-en="About" data-ar="من نحن">About</a></li>
+    <li><a href="services.html" data-en="Services" data-ar="خدماتنا">Services</a></li>
+    <li><a href="portfolio.html" data-en="Portfolio" data-ar="أعمالنا">Portfolio</a></li>
+    <li><a href="shop.html" data-en="Shop" data-ar="المتجر">Shop</a></li>
+    <li><a href="contact.html" class="active" data-en="Contact" data-ar="تواصل">Contact</a></li>
+  </ul>
+  <button class="lang-toggle" id="langToggle" onclick="toggleLang()">عربي</button>
+  <a href="contact.html" class="nav-cta" data-en="Start With Us" data-ar="ابدأ معنا">Start With Us</a>
+</nav>
+
+<section class="page-hero">
+  <div class="container page-hero-inner">
+    <div class="section-tag fade-up" data-en="Contact Us" data-ar="تواصل معنا">Contact Us</div>
+    <h1 class="fade-up" data-en="Let's Start<br>Something <span class='italic gold'>Remarkable</span><br>Together" data-ar="لنبدأ<br>شيئاً <span class='italic gold'>رائعاً</span><br>معاً">Let's Start<br>Something <span class="italic gold">Remarkable</span><br>Together</h1>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="contact-layout">
+      <div class="fade-up">
+        <p style="color:var(--text-muted);margin-bottom:3rem;max-width:360px" data-en="We look forward to hearing your project story. Send us a message and we'll respond within 24 hours." data-ar="نتطلع لسماع قصة مشروعك. أرسل لنا رسالة وسنرد عليك خلال 24 ساعة.">We look forward to hearing your project story. Send us a message and we'll respond within 24 hours.</p>
+
+        <div class="contact-info-item">
+          <div class="ci-label" data-en="Email" data-ar="البريد الإلكتروني">Email</div>
+          <div class="ci-value"><a href="mailto:hello@luminary.co">hello@luminary.co</a></div>
+        </div>
+        <div class="contact-info-item">
+          <div class="ci-label" data-en="Phone" data-ar="الهاتف">Phone</div>
+          <div class="ci-value"><a href="tel:+966500000000">+966 50 000 0000</a></div>
+        </div>
+        <div class="contact-info-item">
+          <div class="ci-label" data-en="Address" data-ar="العنوان">Address</div>
+          <div class="ci-value" data-en="Riyadh, Saudi Arabia" data-ar="الرياض، المملكة العربية السعودية">Riyadh, Saudi Arabia</div>
+        </div>
+        <div class="contact-info-item">
+          <div class="ci-label" data-en="Working Hours" data-ar="ساعات العمل">Working Hours</div>
+          <div class="ci-value" style="font-size:1rem;" data-en="Sun – Thu, 9AM – 6PM" data-ar="الأحد – الخميس، 9ص – 6م">Sun – Thu, 9AM – 6PM</div>
+        </div>
+
+        <div class="social-links">
+          <a href="#" class="social-link" title="Instagram">In</a>
+          <a href="#" class="social-link" title="Behance">Be</a>
+          <a href="#" class="social-link" title="LinkedIn">Li</a>
+          <a href="#" class="social-link" title="Twitter">Tw</a>
+        </div>
+      </div>
+
+      <div class="fade-up">
+        <div class="contact-form">
+          <div id="formWrap">
+            <div class="form-row">
+              <div class="form-group">
+                <label data-en="Full Name *" data-ar="الاسم الكامل *">Full Name *</label>
+                <input type="text" id="fname" data-placeholder-en="Jane Smith" data-placeholder-ar="محمد الأحمدي" placeholder="Jane Smith">
+              </div>
+              <div class="form-group">
+                <label data-en="Email Address *" data-ar="البريد الإلكتروني *">Email Address *</label>
+                <input type="email" id="femail" placeholder="email@example.com">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label data-en="Company / Business" data-ar="الشركة / العمل">Company / Business</label>
+                <input type="text" data-placeholder-en="Your company name" data-placeholder-ar="اسم شركتك" placeholder="Your company name">
+              </div>
+              <div class="form-group">
+                <label data-en="Phone" data-ar="الهاتف">Phone</label>
+                <input type="tel" placeholder="+966 5X XXX XXXX">
+              </div>
+            </div>
+            <div class="form-group">
+              <label data-en="Service Required" data-ar="نوع الخدمة المطلوبة">Service Required</label>
+              <select>
+                <option data-en="Select a service" data-ar="اختر الخدمة">Select a service</option>
+                <option data-en="Visual Identity" data-ar="الهوية البصرية">Visual Identity</option>
+                <option data-en="Website Development" data-ar="تطوير موقع ويب">Website Development</option>
+                <option data-en="Marketing Strategy" data-ar="استراتيجية تسويقية">Marketing Strategy</option>
+                <option data-en="Full Package" data-ar="باقة متكاملة">Full Package</option>
+                <option data-en="Other" data-ar="أخرى">Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label data-en="Approximate Budget" data-ar="الميزانية التقريبية">Approximate Budget</label>
+              <div class="budget-options">
+                <div class="budget-opt" onclick="selectBudget(this)">Under $2K</div>
+                <div class="budget-opt" onclick="selectBudget(this)">$2K – $5K</div>
+                <div class="budget-opt" onclick="selectBudget(this)">$5K – $10K</div>
+                <div class="budget-opt" onclick="selectBudget(this)">$10K – $25K</div>
+                <div class="budget-opt" onclick="selectBudget(this)">$25K+</div>
+                <div class="budget-opt" onclick="selectBudget(this)" data-en="Not decided yet" data-ar="لم يتحدد بعد">Not decided yet</div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label data-en="Project Details *" data-ar="تفاصيل المشروع *">Project Details *</label>
+              <textarea id="fmsg" data-placeholder-en="Tell us about your project, your goals, and the expected delivery date..." data-placeholder-ar="أخبرنا عن مشروعك، أهدافك، والتاريخ المتوقع للتسليم..." placeholder="Tell us about your project, your goals, and the expected delivery date..."></textarea>
+            </div>
+            <button class="submit-btn" onclick="submitForm()">
+              <span data-en="Send Message" data-ar="إرسال الرسالة">Send Message</span>
+              <span>→</span>
+            </button>
+          </div>
+
+          <div class="form-success" id="formSuccess">
+            <div class="success-icon">✦</div>
+            <h3 data-en="Your message was sent successfully!" data-ar="تم إرسال رسالتك بنجاح!">Your message was sent successfully!</h3>
+            <p data-en="Thank you for reaching out. Our team will contact you within 24 hours to discuss your project details." data-ar="شكراً على تواصلك معنا. سيتواصل معك فريقنا خلال 24 ساعة لمناقشة تفاصيل مشروعك.">Thank you for reaching out. Our team will contact you within 24 hours to discuss your project details.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="map-section">
+  <div class="container">
+    <div class="section-tag fade-up" style="margin-bottom:1.5rem" data-en="Our Location" data-ar="موقعنا">Our Location</div>
+    <div class="map-box fade-up">
+      <div class="map-pin">
+        <div class="map-pin-dot"></div>
+        <div class="map-label" data-en="Riyadh, Saudi Arabia" data-ar="الرياض، المملكة العربية السعودية">Riyadh, Saudi Arabia</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand"><a href="index.html" class="nav-logo"><span class="logo-e">E</span><span class="logo-s">S</span><span class="logo-t">T</span><span class="logo-l">L</span></a><p data-en="A creative agency specializing in visual identity and exceptional web experiences." data-ar="وكالة إبداعية متخصصة في بناء الهويات البصرية وتجارب الويب الاستثنائية.">A creative agency specializing in visual identity and exceptional web experiences.</p></div>
+      <div class="footer-col"><h4 data-en="Company" data-ar="الشركة">Company</h4><ul><li><a href="about.html" data-en="About Us" data-ar="من نحن">About Us</a></li><li><a href="portfolio.html" data-en="Our Work" data-ar="أعمالنا">Our Work</a></li><li><a href="contact.html" data-en="Contact Us" data-ar="تواصل معنا">Contact Us</a></li></ul></div>
+      <div class="footer-col"><h4 data-en="Services" data-ar="خدماتنا">Services</h4><ul><li><a href="services.html" data-en="Visual Identity" data-ar="الهوية البصرية">Visual Identity</a></li><li><a href="services.html" data-en="Web Development" data-ar="تطوير الويب">Web Development</a></li><li><a href="services.html" data-en="Digital Marketing" data-ar="التسويق الرقمي">Digital Marketing</a></li></ul></div>
+      <div class="footer-col"><h4 data-en="Follow Us" data-ar="تابعنا">Follow Us</h4><ul><li><a href="#">Instagram</a></li><li><a href="#">Behance</a></li><li><a href="#">LinkedIn</a></li></ul></div>
+      <div class="footer-learn">
+        <span class="learn-badge" data-en="New" data-ar="جديد">New</span>
+        <h4 data-en="Learn With Me" data-ar="تعلّم معي">Learn With Me</h4>
+        <ul>
+          <li><a href="learn-arduino.html#intro"><span class="learn-dot"></span><span data-en="Arduino Basics" data-ar="أساسيات أردوينو">Arduino Basics</span></a></li>
+          <li><a href="learn-arduino.html#wemos"><span class="learn-dot"></span><span data-en="WEMOS D1 R32" data-ar="ويموس D1 R32">WEMOS D1 R32</span></a></li>
+          <li><a href="learn-arduino.html#controllers"><span class="learn-dot"></span><span data-en="Microcontrollers" data-ar="المتحكمات الدقيقة">Microcontrollers</span></a></li>
+          <li><a href="learn-arduino.html#getstarted"><span class="learn-dot"></span><span data-en="Get Started" data-ar="ابدأ الآن">Get Started</span></a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom"><span data-en="© 2025 ESTL. All rights reserved." data-ar="© 2025 ESTL. جميع الحقوق محفوظة.">© 2025 ESTL. All rights reserved.</span><span data-en="Made with passion ✦" data-ar="صُنع بشغف ✦">Made with passion ✦</span></div>
+  </div>
+</footer>
+
+<script src="lang.js"></script>
+<script>
+  const burger = document.getElementById('burger');
+  const navLinks = document.getElementById('navLinks');
+  burger.addEventListener('click', () => { burger.classList.toggle('open'); navLinks.classList.toggle('open'); });
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+  // Update placeholders on lang switch
+  const _origApply = window.toggleLang;
+  window.toggleLang = function() {
+    _origApply();
+    updatePlaceholders();
+    updateSelectOptions();
+  };
+  function updatePlaceholders() {
+    const lang = document.documentElement.getAttribute('lang') || 'en';
+    document.querySelectorAll('[data-placeholder-en]').forEach(el => {
+      el.placeholder = el.getAttribute('data-placeholder-' + lang) || el.getAttribute('data-placeholder-en');
+    });
+  }
+  function updateSelectOptions() {
+    const lang = document.documentElement.getAttribute('lang') || 'en';
+    document.querySelectorAll('select option[data-en]').forEach(opt => {
+      opt.textContent = opt.getAttribute('data-' + lang) || opt.getAttribute('data-en');
+    });
+  }
+
+  function selectBudget(el) {
+    document.querySelectorAll('.budget-opt').forEach(b => b.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  function submitForm() {
+    const name = document.getElementById('fname').value.trim();
+    const email = document.getElementById('femail').value.trim();
+    const msg = document.getElementById('fmsg').value.trim();
+    if (!name || !email || !msg) {
+      const lang = document.documentElement.getAttribute('lang') || 'en';
+      alert(lang === 'ar'
+        ? 'يرجى ملء الحقول المطلوبة (الاسم، البريد الإلكتروني، تفاصيل المشروع)'
+        : 'Please fill in the required fields (Name, Email, Project Details)');
+      return;
+    }
+    document.getElementById('formWrap').style.display = 'none';
+    document.getElementById('formSuccess').style.display = 'block';
+    // Apply lang to success message
+    const lang = document.documentElement.getAttribute('lang') || 'en';
+    document.querySelectorAll('#formSuccess [data-en]').forEach(el => {
+      el.textContent = el.getAttribute('data-' + lang) || el.getAttribute('data-en');
+    });
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ESTL — Portfolio</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .page-hero { padding: 12rem 0 6rem; position: relative; overflow: hidden; }
+    .page-hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 80% at 50% 30%, rgba(188,174,29,0.06) 0%, transparent 70%); }
+    .page-hero-inner { position: relative; }
+
+    .filter-bar { display: flex; gap: 0; flex-wrap: wrap; border: 1px solid var(--border-dim); width: fit-content; margin-bottom: 3rem; }
+    .filter-btn { background: none; border: none; border-right: 1px solid var(--border-dim); color: var(--text-muted); font-family: var(--font-body); font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; padding: 0.75rem 1.5rem; cursor: pointer; transition: all 0.2s; }
+    html[lang="ar"] .filter-btn { font-family: var(--font-arabic); border-right: none; border-left: 1px solid var(--border-dim); }
+    .filter-btn:last-child { border-right: none; }
+    html[lang="ar"] .filter-btn:last-child { border-left: none; }
+    .filter-btn:hover { color: var(--text); background: var(--bg3); }
+    .filter-btn.active { color: var(--gold); background: var(--gold-dim); }
+
+    .portfolio-grid { display: grid; grid-template-columns: repeat(12,1fr); grid-auto-rows: 80px; gap: 1rem; }
+    .port-item { background: var(--bg3); overflow: hidden; position: relative; cursor: pointer; transition: transform 0.3s; }
+    .port-item:hover { transform: scale(0.99); }
+    .port-item.s1 { grid-column: span 7; grid-row: span 5; }
+    .port-item.s2 { grid-column: span 5; grid-row: span 3; }
+    .port-item.s3 { grid-column: span 5; grid-row: span 2; }
+    .port-item.s4 { grid-column: span 4; grid-row: span 4; }
+    .port-item.s5 { grid-column: span 4; grid-row: span 4; }
+    .port-item.s6 { grid-column: span 4; grid-row: span 4; }
+    .port-item.s7 { grid-column: span 6; grid-row: span 3; }
+    .port-item.s8 { grid-column: span 6; grid-row: span 3; }
+
+    .port-bg { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+    .port-bg-num { font-family: var(--font-display); font-size: 8rem; font-weight: 300; color: rgba(255,255,255,0.04); }
+    .port-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.1) 50%, transparent 100%); padding: 1.5rem; display: flex; flex-direction: column; justify-content: flex-end; opacity: 0; transition: opacity 0.4s; }
+    .port-item:hover .port-overlay { opacity: 1; }
+    .port-tag { font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.4rem; }
+    .port-title { font-family: var(--font-display); font-size: 1.2rem; }
+    html[lang="ar"] .port-title { font-family: var(--font-arabic); }
+    .port-arrow { position: absolute; top: 1.5rem; right: 1.5rem; width: 2rem; height: 2rem; border: 1px solid rgba(255,255,255,0.3); display: flex; align-items: center; justify-content: center; font-size: 0.8rem; color: var(--text); opacity: 0; transition: opacity 0.4s; }
+    html[lang="ar"] .port-arrow { right: auto; left: 1.5rem; }
+    .port-item:hover .port-arrow { opacity: 1; }
+
+    .bg-a { background: linear-gradient(135deg, #1a1810 0%, #2e2518 50%, #1a1208 100%); }
+    .bg-b { background: linear-gradient(135deg, #101a15 0%, #0d1e1a 100%); }
+    .bg-c { background: linear-gradient(135deg, #1a1018 0%, #200d1a 100%); }
+    .bg-d { background: linear-gradient(135deg, #101518 0%, #0d1520 100%); }
+    .bg-e { background: linear-gradient(135deg, #181210 0%, #201612 100%); }
+    .bg-f { background: linear-gradient(135deg, #121818 0%, #0d1e1e 100%); }
+    .bg-g { background: linear-gradient(135deg, #181018 0%, #1a0d1a 100%); }
+    .bg-h { background: linear-gradient(135deg, #101218 0%, #0d1020 100%); }
+
+    .modal-overlay { position: fixed; inset: 0; z-index: 200; background: rgba(0,0,0,0.9); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+    .modal { background: var(--bg2); border: 1px solid var(--border); max-width: 700px; width: 90%; max-height: 85vh; overflow-y: auto; transform: translateY(20px); transition: transform 0.3s; }
+    .modal-overlay.open .modal { transform: translateY(0); }
+    .modal-header { padding: 2rem; border-bottom: 1px solid var(--border-dim); display: flex; justify-content: space-between; }
+    .modal-close { background: none; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer; }
+    .modal-close:hover { color: var(--text); }
+    .modal-body { padding: 2rem; }
+    .modal-img { width: 100%; aspect-ratio: 16/9; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem; font-family: var(--font-display); font-size: 5rem; color: rgba(188,174,29,0.2); }
+    .modal-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem; }
+    .modal-tag { font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; border: 1px solid var(--border); color: var(--gold); padding: 0.25rem 0.75rem; }
+    .modal-body p { color: var(--text-muted); font-size: 0.9rem; }
+
+    @media(max-width:900px) {
+      .portfolio-grid { grid-template-columns: repeat(6,1fr); }
+      .port-item.s1, .port-item.s2, .port-item.s3, .port-item.s4, .port-item.s5, .port-item.s6, .port-item.s7, .port-item.s8 { grid-column: span 6; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo"><span class="logo-e">E</span><span class="logo-s">S</span><span class="logo-t">T</span><span class="logo-l">L</span></a>
+  <button class="hamburger" id="burger"><span></span><span></span><span></span></button>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="index.html" data-en="Home" data-ar="الرئيسية">Home</a></li>
+    <li><a href="about.html" data-en="About" data-ar="من نحن">About</a></li>
+    <li><a href="services.html" data-en="Services" data-ar="خدماتنا">Services</a></li>
+    <li><a href="portfolio.html" class="active" data-en="Portfolio" data-ar="أعمالنا">Portfolio</a></li>
+    <li><a href="shop.html" data-en="Shop" data-ar="المتجر">Shop</a></li>
+    <li><a href="contact.html" data-en="Contact" data-ar="تواصل">Contact</a></li>
+  </ul>
+  <button class="lang-toggle" id="langToggle" onclick="toggleLang()">عربي</button>
+  <a href="contact.html" class="nav-cta" data-en="Start With Us" data-ar="ابدأ معنا">Start With Us</a>
+</nav>
+
+<section class="page-hero">
+  <div class="container page-hero-inner">
+    <div class="section-tag fade-up" data-en="Portfolio" data-ar="معرض الأعمال">Portfolio</div>
+    <h1 class="fade-up" data-en="Work That<br><span class='italic gold'>Speaks</span><br>for Itself" data-ar="أعمال<br><span class='italic gold'>تتحدث</span><br>عن نفسها">Work That<br><span class="italic gold">Speaks</span><br>for Itself</h1>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="filter-bar fade-up">
+      <button class="filter-btn active" data-filter="all" data-en="All" data-ar="الكل">All</button>
+      <button class="filter-btn" data-filter="brand" data-en="Visual Identity" data-ar="هوية بصرية">Visual Identity</button>
+      <button class="filter-btn" data-filter="web" data-en="Web Dev" data-ar="تطوير ويب">Web Dev</button>
+      <button class="filter-btn" data-filter="marketing" data-en="Marketing" data-ar="تسويق">Marketing</button>
+    </div>
+
+    <div class="portfolio-grid fade-up" id="portfolioGrid">
+      <div class="port-item s1 bg-a" data-cat="brand"
+           data-en-title="Nova Project" data-ar-title="مشروع نوفا"
+           data-en-tag="Visual Identity" data-ar-tag="هوية بصرية"
+           data-en-desc="A complete visual identity for an AI tech startup. Included logo, brand guidelines, and full marketing materials." data-ar-desc="هوية بصرية متكاملة لشركة تقنية ناشئة تقدم حلول الذكاء الاصطناعي. شملت الشعار ودليل الهوية والمواد التسويقية الكاملة."
+           onclick="openModal(this)">
+        <div class="port-bg"><span class="port-bg-num">01</span></div>
+        <div class="port-overlay"><span class="port-tag" data-en="Visual Identity" data-ar="هوية بصرية">Visual Identity</span><h3 class="port-title" data-en="Nova Project" data-ar="مشروع نوفا">Nova Project</h3></div>
+        <div class="port-arrow">↗</div>
+      </div>
+      <div class="port-item s2 bg-b" data-cat="web"
+           data-en-title="Aura Platform" data-ar-title="منصة أورا"
+           data-en-tag="Web Development" data-ar-tag="تطوير ويب"
+           data-en-desc="A complete web platform for event and conference management with a smart booking system and advanced dashboard." data-ar-desc="منصة ويب متكاملة لإدارة الفعاليات والمؤتمرات مع نظام حجز ذكي ولوحة تحكم متقدمة."
+           onclick="openModal(this)">
+        <div class="port-bg"><span class="port-bg-num">02</span></div>
+        <div class="port-overlay"><span class="port-tag" data-en="Web Development" data-ar="تطوير ويب">Web Development</span><h3 class="port-title" data-en="Aura Platform" data-ar="منصة أورا">Aura Platform</h3></div>
+        <div class="port-arrow">↗</div>
+      </div>
+      <div class="port-item s3 bg-c" data-cat="marketing"
+           data-en-title="Golden Campaign" data-ar-title="حملة ذهبية"
+           data-en-tag="Digital Marketing" data-ar-tag="تسويق رقمي"
+           data-en-desc="An integrated digital marketing campaign that achieved a 300% return on investment in just three months." data-ar-desc="حملة تسويقية رقمية متكاملة حققت 300% عائد على الاستثمار خلال ثلاثة أشهر فقط."
+           onclick="openModal(this)">
+        <div class="port-bg"><span class="port-bg-num">03</span></div>
+        <div class="port-overlay"><span class="port-tag" data-en="Digital Marketing" data-ar="تسويق رقمي">Digital Marketing</span><h3 class="port-title" data-en="Golden Campaign" data-ar="حملة ذهبية">Golden Campaign</h3></div>
+        <div class="port-arrow">↗</div>
+      </div>
+      <div class="port-item s4 bg-d" data-cat="brand"
+           data-en-title="Zumurrud Brand" data-ar-title="علامة زمرد"
+           data-en-tag="Visual Identity" data-ar-tag="هوية بصرية"
+           data-en-desc="A luxury visual identity for a premium jewellery brand, reflecting authenticity and modernity." data-ar-desc="هوية بصرية فاخرة لعلامة مجوهرات راقية، تعكس الأصالة والحداثة معاً."
+           onclick="openModal(this)">
+        <div class="port-bg"><span class="port-bg-num">04</span></div>
+        <div class="port-overlay"><span class="port-tag" data-en="Visual Identity" data-ar="هوية بصرية">Visual Identity</span><h3 class="port-title" data-en="Zumurrud Brand" data-ar="علامة زمرد">Zumurrud Brand</h3></div>
+        <div class="port-arrow">↗</div>
+      </div>
+      <div class="port-item s5 bg-e" data-cat="web"
+           data-en-title="Lam'a Store" data-ar-title="متجر لمعة"
+           data-en-tag="Web Development" data-ar-tag="تطوير ويب"
+           data-en-desc="A luxury e-commerce store for a Saudi fashion brand with an exceptional shopping experience and integrated inventory management." data-ar-desc="متجر إلكتروني فاخر لعلامة أزياء سعودية مع تجربة شراء استثنائية وإدارة مخزون متكاملة."
+           onclick="openModal(this)">
+        <div class="port-bg"><span class="port-bg-num">05</span></div>
+        <div class="port-overlay"><span class="port-tag" data-en="Web Development" data-ar="تطوير ويب">Web Development</span><h3 class="port-title" data-en="Lam'a Store" data-ar="متجر لمعة">Lam'a Store</h3></div>
+        <div class="port-arrow">↗</div>
+      </div>
+      <div class="port-item s6 bg-f" data-cat="marketing"
+           data-en-title="Riyadah 2024" data-ar-title="ريادة 2024"
+           data-en-tag="Strategy" data-ar-tag="استراتيجية"
+           data-en-desc="A comprehensive content strategy for an educational platform that led to 500% growth in follower base." data-ar-desc="استراتيجية محتوى شاملة لمنصة تعليمية أدت إلى نمو 500% في قاعدة المتابعين."
+           onclick="openModal(this)">
+        <div class="port-bg"><span class="port-bg-num">06</span></div>
+        <div class="port-overlay"><span class="port-tag" data-en="Strategy" data-ar="استراتيجية">Strategy</span><h3 class="port-title" data-en="Riyadah 2024" data-ar="ريادة 2024">Riyadah 2024</h3></div>
+        <div class="port-arrow">↗</div>
+      </div>
+      <div class="port-item s7 bg-g" data-cat="brand"
+           data-en-title="Sidra Identity" data-ar-title="هوية سِدرة"
+           data-en-tag="Visual Identity" data-ar-tag="هوية بصرية"
+           data-en-desc="A complete rebrand for a luxury boutique hotel blending Saudi cultural heritage with contemporary design." data-ar-desc="إعادة بناء كاملة لهوية فندق بوتيك فاخر تجمع بين الموروث الثقافي السعودي والتصميم المعاصر."
+           onclick="openModal(this)">
+        <div class="port-bg"><span class="port-bg-num">07</span></div>
+        <div class="port-overlay"><span class="port-tag" data-en="Visual Identity" data-ar="هوية بصرية">Visual Identity</span><h3 class="port-title" data-en="Sidra Identity" data-ar="هوية سِدرة">Sidra Identity</h3></div>
+        <div class="port-arrow">↗</div>
+      </div>
+      <div class="port-item s8 bg-h" data-cat="web"
+           data-en-title="Khabar Gateway" data-ar-title="بوابة الخبر"
+           data-en-tag="Web Development" data-ar-tag="تطوير ويب"
+           data-en-desc="A bold-designed news site with high performance supporting millions of monthly visits and an advanced CMS." data-ar-desc="موقع إخباري بتصميم جريء وأداء عالي يدعم ملايين الزيارات الشهرية مع نظام إدارة محتوى متقدم."
+           onclick="openModal(this)">
+        <div class="port-bg"><span class="port-bg-num">08</span></div>
+        <div class="port-overlay"><span class="port-tag" data-en="Web Development" data-ar="تطوير ويب">Web Development</span><h3 class="port-title" data-en="Khabar Gateway" data-ar="بوابة الخبر">Khabar Gateway</h3></div>
+        <div class="port-arrow">↗</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <div>
+        <div class="section-tag" id="modalTag"></div>
+        <h3 id="modalTitle"></h3>
+      </div>
+      <button class="modal-close" onclick="closeModalBtn()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-img" id="modalImg"></div>
+      <div class="modal-tags" id="modalTags"></div>
+      <p id="modalDesc"></p>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand"><a href="index.html" class="nav-logo"><span class="logo-e">E</span><span class="logo-s">S</span><span class="logo-t">T</span><span class="logo-l">L</span></a><p data-en="A creative agency specializing in visual identity and exceptional web experiences." data-ar="وكالة إبداعية متخصصة في بناء الهويات البصرية وتجارب الويب الاستثنائية.">A creative agency specializing in visual identity and exceptional web experiences.</p></div>
+      <div class="footer-col"><h4 data-en="Company" data-ar="الشركة">Company</h4><ul><li><a href="about.html" data-en="About Us" data-ar="من نحن">About Us</a></li><li><a href="portfolio.html" data-en="Our Work" data-ar="أعمالنا">Our Work</a></li><li><a href="contact.html" data-en="Contact Us" data-ar="تواصل معنا">Contact Us</a></li></ul></div>
+      <div class="footer-col"><h4 data-en="Services" data-ar="خدماتنا">Services</h4><ul><li><a href="services.html" data-en="Visual Identity" data-ar="الهوية البصرية">Visual Identity</a></li><li><a href="services.html" data-en="Web Development" data-ar="تطوير الويب">Web Development</a></li><li><a href="services.html" data-en="Digital Marketing" data-ar="التسويق الرقمي">Digital Marketing</a></li></ul></div>
+      <div class="footer-col"><h4 data-en="Follow Us" data-ar="تابعنا">Follow Us</h4><ul><li><a href="#">Instagram</a></li><li><a href="#">Behance</a></li><li><a href="#">LinkedIn</a></li></ul></div>
+      <div class="footer-learn">
+        <span class="learn-badge" data-en="New" data-ar="جديد">New</span>
+        <h4 data-en="Learn With Me" data-ar="تعلّم معي">Learn With Me</h4>
+        <ul>
+          <li><a href="learn-arduino.html#intro"><span class="learn-dot"></span><span data-en="Arduino Basics" data-ar="أساسيات أردوينو">Arduino Basics</span></a></li>
+          <li><a href="learn-arduino.html#wemos"><span class="learn-dot"></span><span data-en="WEMOS D1 R32" data-ar="ويموس D1 R32">WEMOS D1 R32</span></a></li>
+          <li><a href="learn-arduino.html#controllers"><span class="learn-dot"></span><span data-en="Microcontrollers" data-ar="المتحكمات الدقيقة">Microcontrollers</span></a></li>
+          <li><a href="learn-arduino.html#getstarted"><span class="learn-dot"></span><span data-en="Get Started" data-ar="ابدأ الآن">Get Started</span></a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom"><span data-en="© 2025 ESTL. All rights reserved." data-ar="© 2025 ESTL. جميع الحقوق محفوظة.">© 2025 ESTL. All rights reserved.</span><span data-en="Made with passion ✦" data-ar="صُنع بشغف ✦">Made with passion ✦</span></div>
+  </div>
+</footer>
+
+<script src="lang.js"></script>
+<script>
+  const burger = document.getElementById('burger');
+  const navLinks = document.getElementById('navLinks');
+  burger.addEventListener('click', () => { burger.classList.toggle('open'); navLinks.classList.toggle('open'); });
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const filter = btn.dataset.filter;
+      document.querySelectorAll('.port-item').forEach(item => {
+        item.style.opacity = (filter === 'all' || item.dataset.cat === filter) ? '1' : '0.2';
+        item.style.pointerEvents = (filter === 'all' || item.dataset.cat === filter) ? 'all' : 'none';
+      });
+    });
+  });
+
+  function openModal(el) {
+    const lang = document.documentElement.getAttribute('lang') || 'en';
+    const overlay = document.getElementById('modalOverlay');
+    const title = el.getAttribute('data-' + lang + '-title') || el.getAttribute('data-en-title');
+    const tag   = el.getAttribute('data-' + lang + '-tag')   || el.getAttribute('data-en-tag');
+    const desc  = el.getAttribute('data-' + lang + '-desc')  || el.getAttribute('data-en-desc');
+    document.getElementById('modalTitle').textContent = title;
+    document.getElementById('modalTag').textContent = tag;
+    document.getElementById('modalDesc').textContent = desc;
+    const num = el.querySelector('.port-bg-num').textContent;
+    const imgEl = document.getElementById('modalImg');
+    imgEl.textContent = num;
+    imgEl.style.background = window.getComputedStyle(el).background;
+    document.getElementById('modalTags').innerHTML = `<span class="modal-tag">${tag}</span><span class="modal-tag">Luminary</span><span class="modal-tag">2024</span>`;
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal(e) { if(e.target === document.getElementById('modalOverlay')) closeModalBtn(); }
+  function closeModalBtn() { document.getElementById('modalOverlay').classList.remove('open'); document.body.style.overflow = ''; }
+</script>
+</body>
+</html>
