@@ -6,17 +6,37 @@
   <title>ESTL — Learn With Me: Arduino & Microcontrollers</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    /* ... التنسيقات الأصلية للموقع ... */
+    /* ── تعريف المتغيرات الأساسية (لحل مشكلة الشاشة السوداء) ── */
+    :root {
+      --bg: #0a0a0a;
+      --bg2: #111111;
+      --bg3: #161616;
+      --text: #ffffff;
+      --text-muted: #a0a0a0;
+      --text-dim: #666666;
+      --gold: #BCAE1D;
+      --crimson: #681a15;
+      --border: #333333;
+      --border-dim: #222222;
+      --font-display: 'Inter', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      font-family: sans-serif;
+    }
 
     /* ── التنسيق الخاص بـ Sketchfab لضمان التجاوب ── */
     .sketchfab-embed-wrapper {
       position: relative;
       width: 100%;
       height: 0;
-      padding-bottom: 60%; /* يحافظ على أبعاد الموديل */
+      padding-bottom: 60%; /* أبعاد الموديل */
       overflow: hidden;
       border: 1px solid var(--border-dim);
-      background: #111;
+      background: #000;
       margin-top: 1.5rem;
       border-radius: 8px;
     }
@@ -28,64 +48,72 @@
       height: 100%;
       border: 0;
     }
-    .model-caption {
-      margin-top: 0.8rem;
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      text-align: center;
+
+    /* ── Page Hero ── */
+    .learn-hero {
+      padding: 10rem 0 5rem;
+      position: relative;
+      overflow: hidden;
+      background: var(--bg);
     }
-    .model-caption a {
-      color: var(--gold);
-      text-decoration: none;
-    }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+    
+    /* ... (باقي تنسيقات الـ CSS الأصلية من الكود الخاص بك) ... */
+    .fade-up { opacity: 0; transform: translateY(20px); transition: all 0.6s ease-out; }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+    .gold { color: var(--gold); }
+    .italic { font-style: italic; }
+    .section-tag { font-size: 0.7rem; color: var(--gold); text-transform: uppercase; letter-spacing: 2px; }
   </style>
 </head>
 <body>
 
+<section class="learn-hero">
+  <div class="container learn-hero-inner">
+    <span class="learn-badge-hero" data-en="✦ Learn With Me" data-ar="✦ تعلّم معي">✦ Learn With Me</span>
+    <h1 class="fade-up" data-en="Arduino, WEMOS & <em>Microcontrollers</em>" data-ar="أردوينو، ويموس و<em>المتحكمات</em>">Arduino, WEMOS &amp; <em>Microcontrollers</em></h1>
+    <p class="fade-up" data-en="From architecture to your first circuit." data-ar="من المعمارية حتى أول دائرة كهربائية.">From architecture to your first circuit.</p>
+  </div>
+</section>
+
 <section class="learn-section section" id="intro">
   <div class="container">
-    <div class="slide-header fade-up">
-      <span class="slide-num">01</span>
-      <span class="section-tag" data-en="Foundation" data-ar="الأساس">Foundation</span>
-      <h2 data-en="What Is a <span class='italic gold'>Microcontroller?</span>" data-ar="ما هو <span class='italic gold'>المتحكم الدقيق؟</span>">What Is a <span class="italic gold">Microcontroller?</span></h2>
-      <div class="divider"></div>
-    </div>
-
     <div class="two-col fade-up">
-      <div class="theory-side">
-        <p style="color:var(--text-muted);margin-bottom:1.25rem;" data-en="A microcontroller (MCU) is a compact integrated circuit designed to govern a specific operation in an embedded system." data-ar="المتحكم الدقيق (MCU) هو دائرة متكاملة مدمجة صُممت لإدارة عمليات محددة داخل الأنظمة المدمجة.">A microcontroller (MCU) is a compact integrated circuit designed to govern a specific operation in an embedded system.</p>
-        
-        <ul class="points-list">
-          <li data-en="CPU: The 'Brain' that executes instructions." data-ar="CPU: 'العقل' الذي ينفذ التعليمات.">CPU: The 'Brain' that executes instructions.</li>
-          <li data-en="RAM: Temporary memory for variables." data-ar="RAM: ذاكرة مؤقتة للمتغيرات.">RAM: Temporary memory for variables.</li>
-          <li data-en="Flash: Where your code is stored permanently." data-ar="Flash: حيث يتم تخزين كودك بشكل دائم.">Flash: Where your code is stored permanently.</li>
-        </ul>
+      <div>
+        <span class="section-tag">Module 01</span>
+        <h2 data-en="What Is a <span class='italic gold'>Microcontroller?</span>" data-ar="ما هو <span class='italic gold'>المتحكم الدقيق؟</span>">What Is a <span class="italic gold">Microcontroller?</span></h2>
+        <p style="color:var(--text-muted); margin-top: 1rem;">
+          المتحكم الدقيق هو عقل النظام المدمج، يحتوي على المعالج والذاكرة والمداخل والمخارج في قطعة واحدة.
+        </p>
       </div>
 
-      <div class="visual-side">
-        <div class="board-visual fade-up" style="background: rgba(255,255,255,0.02);">
+      <div>
+        <div class="board-visual fade-up">
           <span class="section-tag" data-en="3D Interactive View" data-ar="عرض تفاعلي ثلاثي الأبعاد">3D Interactive View</span>
           
           <div class="sketchfab-embed-wrapper">
             <iframe 
               title="Arduino Uno" 
-              src="https://sketchfab.com/models/4abda46509214629a5e9d4ce2d5323af/embed?autostart=1&ui_theme=dark" 
+              src="https://sketchfab.com/models/4abda46509214629a5e9d4ce2d5323af/embed?autostart=1&ui_theme=dark&dnt=1" 
               allow="autoplay; fullscreen; xr-spatial-tracking">
             </iframe>
           </div>
           
-          <div class="model-caption">
-            <span data-en="Model: Arduino Uno by ASK'R" data-ar="الموديل: أردوينو أونو بواسطة ASK'R">Model: Arduino Uno by ASK'R</span>
-          </div>
+          <p style="font-size: 11px; margin-top: 10px; color: var(--text-dim); text-align: center;">
+            Arduino Uno 3D Model by ASK'R
+          </p>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<script src="lang.js"></script>
 <script>
-  // التسكريب الخاص بالـ Fade In والـ Hamburger Menu يبقى كما هو
+  // كود الأنيميشن لظهور العناصر
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 </script>
 
 </body>
