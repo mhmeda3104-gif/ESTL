@@ -1,120 +1,117 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ESTL — Learn With Me: Arduino & Microcontrollers</title>
-  <link rel="stylesheet" href="style.css">
-  <style>
-    /* ── تعريف المتغيرات الأساسية (لحل مشكلة الشاشة السوداء) ── */
-    :root {
-      --bg: #0a0a0a;
-      --bg2: #111111;
-      --bg3: #161616;
-      --text: #ffffff;
-      --text-muted: #a0a0a0;
-      --text-dim: #666666;
-      --gold: #BCAE1D;
-      --crimson: #681a15;
-      --border: #333333;
-      --border-dim: #222222;
-      --font-display: 'Inter', sans-serif;
-    }
-
-    body {
-      background-color: var(--bg);
-      color: var(--text);
-      margin: 0;
-      font-family: sans-serif;
-    }
-
-    /* ── التنسيق الخاص بـ Sketchfab لضمان التجاوب ── */
-    .sketchfab-embed-wrapper {
-      position: relative;
-      width: 100%;
-      height: 0;
-      padding-bottom: 60%; /* أبعاد الموديل */
-      overflow: hidden;
-      border: 1px solid var(--border-dim);
-      background: #000;
-      margin-top: 1.5rem;
-      border-radius: 8px;
-    }
-    .sketchfab-embed-wrapper iframe {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      border: 0;
-    }
-
-    /* ── Page Hero ── */
-    .learn-hero {
-      padding: 10rem 0 5rem;
-      position: relative;
-      overflow: hidden;
-      background: var(--bg);
-    }
-    .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESTL — Learn With Me: Arduino</title>
+    <link rel="stylesheet" href="style.css">
     
-    /* ... (باقي تنسيقات الـ CSS الأصلية من الكود الخاص بك) ... */
-    .fade-up { opacity: 0; transform: translateY(20px); transition: all 0.6s ease-out; }
-    .fade-up.visible { opacity: 1; transform: translateY(0); }
-    .gold { color: var(--gold); }
-    .italic { font-style: italic; }
-    .section-tag { font-size: 0.7rem; color: var(--gold); text-transform: uppercase; letter-spacing: 2px; }
-  </style>
+    <style>
+        /* إضافة تنسيقات مخصصة للـ Sketchfab لضمان التجاوب مع تصميم ESTL */
+        .sketchfab-embed-wrapper {
+            position: relative;
+            width: 100%;
+            height: 0;
+            padding-bottom: 65%; /* للحفاظ على أبعاد الموديل */
+            overflow: hidden;
+            border: 1px solid var(--border-dim);
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 4px;
+            margin-top: 1.5rem;
+        }
+
+        .sketchfab-embed-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        .model-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 0.75rem;
+            padding: 0 0.5rem;
+        }
+
+        .model-info span {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-dim);
+        }
+
+        /* تحسين مظهر السكشن ليتناسب مع وجود الموديل */
+        .visual-side {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+    </style>
 </head>
 <body>
 
-<section class="learn-hero">
-  <div class="container learn-hero-inner">
-    <span class="learn-badge-hero" data-en="✦ Learn With Me" data-ar="✦ تعلّم معي">✦ Learn With Me</span>
-    <h1 class="fade-up" data-en="Arduino, WEMOS & <em>Microcontrollers</em>" data-ar="أردوينو، ويموس و<em>المتحكمات</em>">Arduino, WEMOS &amp; <em>Microcontrollers</em></h1>
-    <p class="fade-up" data-en="From architecture to your first circuit." data-ar="من المعمارية حتى أول دائرة كهربائية.">From architecture to your first circuit.</p>
-  </div>
-</section>
+    <main>
+        <section class="learn-section section" id="intro">
+            <div class="container">
+                <div class="slide-header fade-up">
+                    <span class="slide-num">01</span>
+                    <span class="section-tag" data-en="The Foundation" data-ar="الأساس">The Foundation</span>
+                    <h2 data-en="The <span class='italic gold'>Microcontroller</span>" data-ar="المتحكم <span class='italic gold'>الدقيق</span>">The <span class="italic gold">Microcontroller</span></h2>
+                    <div class="divider"></div>
+                </div>
 
-<section class="learn-section section" id="intro">
-  <div class="container">
-    <div class="two-col fade-up">
-      <div>
-        <span class="section-tag">Module 01</span>
-        <h2 data-en="What Is a <span class='italic gold'>Microcontroller?</span>" data-ar="ما هو <span class='italic gold'>المتحكم الدقيق؟</span>">What Is a <span class="italic gold">Microcontroller?</span></h2>
-        <p style="color:var(--text-muted); margin-top: 1rem;">
-          المتحكم الدقيق هو عقل النظام المدمج، يحتوي على المعالج والذاكرة والمداخل والمخارج في قطعة واحدة.
-        </p>
-      </div>
+                <div class="two-col">
+                    <div class="theory-side fade-up">
+                        <p data-en="A microcontroller is essentially a tiny computer on a single chip. It contains a processor, memory, and programmable input/output peripherals." 
+                           data-ar="المتحكم الدقيق هو في الأساس كمبيوتر صغير على شريحة واحدة. يحتوي على معالج وذاكرة وملحقات إدخال وإخراج قابلة للبرمجة.">
+                           A microcontroller is essentially a tiny computer on a single chip...
+                        </p>
+                        
+                        <ul class="points-list" style="margin-top: 2rem;">
+                            <li data-en="Interactive Hardware Exploration" data-ar="استكشاف تفاعلي للعتاد">Interactive Hardware Exploration</li>
+                            <li data-en="Real-time 3D Components" data-ar="مكونات ثلاثية الأبعاد حقيقية">Real-time 3D Components</li>
+                        </ul>
+                    </div>
 
-      <div>
-        <div class="board-visual fade-up">
-          <span class="section-tag" data-en="3D Interactive View" data-ar="عرض تفاعلي ثلاثي الأبعاد">3D Interactive View</span>
-          
-          <div class="sketchfab-embed-wrapper">
-            <iframe 
-              title="Arduino Uno" 
-              src="https://sketchfab.com/models/4abda46509214629a5e9d4ce2d5323af/embed?autostart=1&ui_theme=dark&dnt=1" 
-              allow="autoplay; fullscreen; xr-spatial-tracking">
-            </iframe>
-          </div>
-          
-          <p style="font-size: 11px; margin-top: 10px; color: var(--text-dim); text-align: center;">
-            Arduino Uno 3D Model by ASK'R
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+                    <div class="visual-side fade-up">
+                        <div class="sketchfab-embed-wrapper">
+                            <iframe 
+                                title="Arduino Uno" 
+                                frameborder="0" 
+                                allowfullscreen 
+                                mozallowfullscreen="true" 
+                                webkitallowfullscreen="true" 
+                                allow="autoplay; fullscreen; xr-spatial-tracking" 
+                                src="https://sketchfab.com/models/4abda46509214629a5e9d4ce2d5323af/embed?autostart=1&ui_theme=dark&ui_hint=0&dnt=1">
+                            </iframe>
+                        </div>
+                        <div class="model-info">
+                            <span data-en="Hardware: Arduino Uno" data-ar="العتاد: أردوينو أونو">Hardware: Arduino Uno</span>
+                            <span data-en="Source: Sketchfab" data-ar="المصدر: سكتش فاب">Source: Sketchfab</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
 
-<script>
-  // كود الأنيميشن لظهور العناصر
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
-  }, { threshold: 0.1 });
-  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
-</script>
+    <script src="lang.js"></script>
+    <script>
+        // كود تفعيل الـ Fade-up Animation بناءً على ستايل موقعك
+        const observerOptions = { threshold: 0.1 };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
 
+        document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+    </script>
 </body>
 </html>
